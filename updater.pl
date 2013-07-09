@@ -89,10 +89,19 @@ sub printError(){
 }
 
 sub getDate(){
-	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+	my($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 	$year += 1900; # Year is returned as a value starting from 1900, therefore we must
 		       # add 1900 to calculate present date
 	return("$year.$mon.$mday");
+}
+
+sub isPrimary(){
+	my($sDirName) = @_;
+	if($sDirName eq $sDirPrefix.$sPrimaryImage){
+		return true;
+	} else{
+		return false;
+	}
 }
 
 ##############
@@ -137,7 +146,7 @@ sub GenConf(){
 		chdir($sDir);
 
 		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image number
-		if($1 eq $sDirPrefix.$sPrimaryImage) { next; } # Skip primary installation image
+		if(&isPrimary($1)) { next; } # Skip primary installation image
 		system("tar -zvcf $sCwd/$1.tar.gz ".join(' ', @sConfigFileList)."\n");
 	}
 	chdir($sCwd);
@@ -155,7 +164,7 @@ sub GenLogArchive(){
 		chdir($sDir);
 
 		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image number
-		if($1 eq $sDirPrefix.$sPrimaryImage) { next; } # Skip primary installation image
+		if(&isPrimary($1)) { next; } # Skip primary installation image
 		system("mkdir -p $sCwd/logs/$1; tar -zvcf $sCwd/logs/$1/log-$1-".&getDate().".tar.gz ".join(' ', @sLogFileList)."\n");
 	}
 	chdir($sCwd);
