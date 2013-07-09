@@ -6,7 +6,7 @@ use Cwd;
 ## Default Profile ##
 #####################
 
-$sImageDir 	= "/home/evilmaniac/Documents/updater";
+$sImageDir 	= "/home/evilmaniac/Documents/updater-test";
 $sDirPrefix 	= "l4d2_";
 $sPrimaryImage 	= "00";
 
@@ -98,9 +98,9 @@ sub getDate(){
 sub isPrimary(){
 	my($sDirName) = @_;
 	if($sDirName eq $sDirPrefix.$sPrimaryImage){
-		return true;
+		return 1;
 	} else{
-		return false;
+		return 0;
 	}
 }
 
