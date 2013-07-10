@@ -65,6 +65,7 @@ use Term::ANSIColor;
 
 %hSettings = (
 	'version'	  => 0.70,
+	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'tar_verbose'	  => 1,
 	'console_prefix'  => 'UpdaterCMD',
@@ -166,7 +167,7 @@ sub unpackFiles(){
 }
 # returns a list of all installation images
 sub getInstallations(){
-	return <$hProfiles{'l4d2'}{'DirImage'}/$hProfiles{'l4d2'}{'ImagePrefix'}*>;
+	return <$hProfiles{$hSettings{'profile'}}{'DirImage'}/$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}*>;
 }
 # prints an error message to the user
 sub printError(){
@@ -187,7 +188,7 @@ sub getDate(){
 # 1 if it is, 0 otherwise
 sub isPrimary(){
 	my($sDirName) = @_;
-	if($sDirName eq $hProfiles{'l4d2'}{'ImagePrefix'}.$hProfiles{'l4d2'}{'PrimaryImage'}){ return 1; } 
+	if($sDirName eq $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'}){ return 1; } 
 	else{ return 0; }
 }
 
@@ -240,7 +241,7 @@ sub GenConf(){
 
 		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image id
 		if(&isPrimary($1)) { next; } # Skip primary installation image
-		&packFiles("$sCwd/$1", join(' ', @{$hProfiles{'l4d2'}{'DirListConf'}}));
+		&packFiles("$sCwd/$1", join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListConf'}}));
 	}
 	chdir($sCwd);
 	return;
@@ -260,7 +261,7 @@ sub GenLogArchive(){
 		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image number
 		if(&isPrimary($1)) { next; } # Skip primary installation image
 		&exeSysCmd("mkdir -p $sCwd/logs/$1");
-		&packFiles("$Cwd/logs/$1/log-$1-".&getDate(), "-C ".$hProfiles{'l4d2'}{'DirLogs'});
+		&packFiles("$Cwd/logs/$1/log-$1-".&getDate(), "-C ".$hProfiles{$hSettings{'profile'}}{'DirLogs'});
 	}
 	chdir($sCwd);
 	return;
@@ -273,8 +274,8 @@ sub GenLogArchive(){
 sub GenPayload(){
 	my $sCwd = getcwd();
 
-	chdir($hProfiles{'l4d2'}{'DirImage'}.'/'.$hProfiles{'l4d2'}{'ImagePrefix'}.$hProfiles{'l4d2'}{'PrimaryImage'});
-	&packFiles("$sCwd/em_payload-".&getDate(), join(' ', @{$hProfiles{'l4d2'}{'DirListPayload'}}));
+	chdir($hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'});
+	&packFiles("$sCwd/em_payload-".&getDate(), join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}));
 	chdir($sCwd);
 }
 ##
