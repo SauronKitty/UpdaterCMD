@@ -47,7 +47,7 @@ $sLogFileDir = "left4dead2/addons/sourcemod/logs";
 );
 
 %hSettings = (
-	'version'	  => 0.3,
+	'version'	  => 0.4,
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'tar_verbose'	  => 1,
 	'console_prefix'  => 'UpdaterCMD',
@@ -118,9 +118,9 @@ sub unpackFiles(){
 			&exeSysCmd("rm $sArchiveName");
 			chdir($sCwd);
 		}
-		else{ printError("An error occured while copying the archive"); return; }
+		else{ &printError("An error occured while copying the archive"); return; }
 	}
-	else{ printError("Archive [$sArchiveName] not found"); return; }
+	else{ &printError("Archive [$sArchiveName] not found"); return; }
 }
 # returns a list of all installation images
 sub getInstallations(){
