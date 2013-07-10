@@ -64,7 +64,7 @@ use Term::ANSIColor;
 );
 
 %hSettings = (
-	'version'	  => 0.61,
+	'version'	  => 0.70,
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'tar_verbose'	  => 1,
 	'console_prefix'  => 'UpdaterCMD',
