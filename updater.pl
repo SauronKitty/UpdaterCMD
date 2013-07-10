@@ -26,6 +26,24 @@ use Term::ANSIColor;
 						'left4dead2/em_motd.txt',
 						'left4dead2/em_host.txt'
 					    ],
+		   },
+	'tf2'	=> {
+			'DirImage'	 => '/home/evilmania/hlds/tf2',
+			'ImagePrefix'	 => 'tf2_',
+			'PrimaryImage'   => '00',
+			'DirLogs'	 => 'tf/addons/sourcemod/logs',
+			'DirListConf'	 => [
+					     	'start*',
+						'tf/addons/sourcemod/configs/sourcebans/sourcebans.cfg',
+						'tf/cfg/Server.cfg'
+					    ],
+			'DirListPayload' => [
+						'tf/addons',
+						'tf/cfg/Server.cfg',
+						'tf/cfg/sourcemod',
+						'tf/em_motd.txt',
+						'tf/em_host.txt'
+					    ],
 		   }
 );
 
