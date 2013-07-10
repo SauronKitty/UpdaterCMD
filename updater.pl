@@ -64,7 +64,9 @@ $sLogFileDir = "left4dead2/addons/sourcemod/logs";
 
 sub CommandInput(){
 	print $hSettings{'console_prefix'}." -> ";
-        $usrCommand = <>;
+	my $usrCommand = <>;
+	$usrCommand =~ s/[\$#@~!&*;,?^\|`\\]+//g; # Filter un-wanted symbols to avoid
+						  # accidental command injection
         &ProcessCommand($usrCommand);
 }
 
