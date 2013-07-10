@@ -35,7 +35,7 @@ $sLogFileDir = "left4dead2/addons/sourcemod/logs";
 ## Variables ##
 ###############
 
-$sVersion = "0.1 [BETA]";
+$sVersion = "0.3";
 
 %hFunctions = (
 	'help' 		=> \&DisplayHelp,
@@ -49,6 +49,8 @@ $sVersion = "0.1 [BETA]";
 );
 
 %hSettings = (
+	'version'	 => 0.3,
+	'sys_name'	 => 'eM-UpdaterCMD',
 	'tar_verbose'	 => 1,
 	'console_prefix' => 'updater',
 	'error_prefix'	 => 'Error',
@@ -90,9 +92,14 @@ sub exeSysCmd(){
 	return;
 }
 # compresses given files into a tar archive
-sub compressTar(){
-	my($sDestination, $sArchiveName, $sFiles) = @_;
-	&exeSysCmd("tar -zcvf $sDestination/$sArchiveName.tar.gz $sFiles");
+sub packFiles(){
+	my($sArchiveName, $sFiles) = @_;
+	my $sFlags;
+
+	if($hSettings{'tar_verbose'}) { $sFlags = '-zcvf'; }
+	else { $sFlags = 'zcf'; }
+
+	&exeSysCmd("tar $sFlags $sArchiveName.tar.gz $sFiles");
 	return;
 }
 # returns a list of all installation images
@@ -134,7 +141,7 @@ sub isPrimary(){
 #
 ##
 sub DisplayHelp(){
-	print "eM-Update | $sVersion\n\nCommands:\n";
+	print $hSettings{'sys_name'}." | v".$hSettings{'version'}."\n\nCommands:\n";
 	foreach my $Key (keys %hFunctions){ print $Key."\n"; }
 	return;
 }
@@ -168,7 +175,7 @@ sub GenConf(){
 
 		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image number
 		if(&isPrimary($1)) { next; } # Skip primary installation image
-		&compressTar($sCwd, $1, join(' ', @sConfigFileList));
+		&packFiles("$sCwd/$1", join(' ', @sConfigFileList));
 	}
 	chdir($sCwd);
 	return;
@@ -187,7 +194,7 @@ sub GenLogArchive(){
 		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image number
 		if(&isPrimary($1)) { next; } # Skip primary installation image
 		&exeSysCmd("mkdir -p $sCwd/logs/$1");
-		&compressTar("$Cwd/logs/$1", "log-$1-".&getDate(), "-C $sLogFileDir");
+		&packFiles("$Cwd/logs/$1/log-$1-".&getDate(), "-C $sLogFileDir");
 	}
 	chdir($sCwd);
 	return;
@@ -200,7 +207,7 @@ sub GenPayload(){
 	my $sCwd = getcwd();
 
 	chdir($sImageDir.'/'.$sDirPrefix.$sPrimaryImage);
-	&compressTar($sCwd, "em_payload-".&getDate(), join(' ', @sPayloadFileList));
+	&packFiles("$sCwd/em_payload-".&getDate(), join(' ', @sPayloadFileList));
 	chdir($sCwd);
 }
 sub SetUpdaterCvar{
