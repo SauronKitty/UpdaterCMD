@@ -48,7 +48,7 @@ $sLogFileDir = "left4dead2/addons/sourcemod/logs";
 );
 
 %hSettings = (
-	'version'	  => 0.6,
+	'version'	  => 0.61,
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'tar_verbose'	  => 1,
 	'console_prefix'  => 'UpdaterCMD',
@@ -72,7 +72,6 @@ sub CommandInput(){
 
 sub ProcessCommand(){
 	my($usrInput) = $_[0];
-	#$usrInput =~ s/\n//;
 
 	my(@usrTokens) = split(/\s+/,$usrInput);
 	my $usrCommand = shift(@usrTokens);
