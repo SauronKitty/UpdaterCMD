@@ -1,3 +1,11 @@
+##############################
+##                          ##
+## eM-UpdaterCMD            ##
+## Written by evilmaniac    ##
+## http://www.evilmania.net ##
+##                          ##
+##############################
+
 #!/usr/bin/perl
 
 use Cwd;
