@@ -42,12 +42,13 @@ $sLogFileDir = "left4dead2/addons/sourcemod/logs";
 	'genconf' 	=> \&GenConf,
 	'genpayload'	=> \&GenPayload,
 	'genlogarchive'	=> \&GenLogArchive,
+	'patch'		=> \&ApplyPatch,
 	'set',		=> \&SetUpdaterCvar,
         'exit' 		=> \&Exit,
 );
 
 %hSettings = (
-	'version'	  => 0.4,
+	'version'	  => 0.6,
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'tar_verbose'	  => 1,
 	'console_prefix'  => 'UpdaterCMD',
@@ -88,6 +89,17 @@ sub ProcessCommand(){
 sub exeSysCmd(){
 	my($sCmd) = @_;
 	system("$sCmd\n");
+	return;
+}
+# lists contents of a compressed tar archive
+sub listContents(){
+	if(scalar @_ == 1){
+		my($sArchiveName) = @_[0];
+
+		if(-e $sArchiveName){ &exeSysCmd("tar -ztvf $sArchiveName"); }
+		else { &printError("Archive [$sArchiveName] not found"); }
+	}
+	else { &printError("Archive name not specified"); }
 	return;
 }
 # compresses given files into a tar archive
@@ -227,15 +239,37 @@ sub GenPayload(){
 	&packFiles("$sCwd/em_payload-".&getDate(), join(' ', @sPayloadFileList));
 	chdir($sCwd);
 }
+sub ApplyPatch{
+	if(@_ == 1){
+		my($sArchiveName) = @_;
+		my @sDirs = &getInstallations();
+		my $iNumImages = scalar @sDirs;
+		if($iNumImages > 0){
+			&listContents($sArchiveName);
+			print("Apply patch ? (y/n) -> ");
+			my $sUsrReply = <>;
+			if($sUsrReply =~ /^[Y]?$/i){
+				foreach $sDir (@sDirs){ &unpackFiles($sArchiveName, $sDir); }
+			}
+			else { &printError("Patching aborted"); return; }
+		}
+		else { &printError("No installation images found"); }
+	}
+	else { &printError("Archive name not specified"); }
+	return;
+}
 ##
 # Updates a value in the %hSettings hash.
 #
 ##
 sub SetUpdaterCvar{
-	my($sSetting, $sNewValue) = @_;
-	if(@_ != 2) { &printError("Invalid number of arguments"); return; }
-	if (exists $hSettings{$sSetting}){ $hSettings{$sSetting} = $sNewValue; }
-	else { &printError("Cvar not found"); return; }
+	if(@_ == 2) {
+		my($sSetting, $sNewValue) = @_;
+
+		if (exists $hSettings{$sSetting}){ $hSettings{$sSetting} = $sNewValue; }
+		else { &printError("Cvar not found"); return; }
+	}
+	else { &printError("Invalid number of arguments"); }
 	return;
 }
 ##
