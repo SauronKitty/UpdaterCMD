@@ -309,7 +309,12 @@ sub SetUpdaterCvar{
 	if(@_ == 2) {
 		my($sSetting, $sNewValue) = @_;
 
-		if (exists $hSettings{$sSetting}){ $hSettings{$sSetting} = $sNewValue; }
+		if (exists $hSettings{$sSetting}){
+			if($sSetting eq 'profile'){
+				if(!exists $hProfiles{$sNewValue}){ &printError("Profile does not exist"); return; }
+			}
+			$hSettings{$sSetting} = $sNewValue;
+		}
 		else { &printError("Cvar not found"); return; }
 	}
 	else { &printError("Invalid number of arguments"); }
