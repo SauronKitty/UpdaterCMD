@@ -75,7 +75,7 @@ use Term::ANSIColor;
 
 %hColors = (
 	'error_prefix'	  => 'red',
-	'status'	  => '',
+	'exit_message'	  => '',
 );
 
 &CommandInput();
@@ -171,7 +171,7 @@ sub getInstallations(){
 # prints an error message to the user
 sub printError(){
 	my($sErrorMsg) = @_;
-	print(colored(['red'],$hSettings{'error_prefix'}).$hSettings{'error_seperator'}.$sErrorMsg."\n");
+	print(colored([$hColors{'error_prefix'}],$hSettings{'error_prefix'}).$hSettings{'error_seperator'}.$sErrorMsg."\n");
 	return;
 }
 # returns date in the YYYY.MM.DD format
