@@ -101,6 +101,7 @@ sub packFiles(){
 	&exeSysCmd("tar $sFlags $sArchiveName.tar.gz $sFiles");
 	return;
 }
+# extracts given tar archive at required destination
 sub unpackFiles(){
 	my($sArchiveName, $sTargetDir) = @_;
 	my $sFlags;
