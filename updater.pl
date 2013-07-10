@@ -65,17 +65,17 @@ $sLogFileDir = "left4dead2/addons/sourcemod/logs";
 sub CommandInput(){
 	print $hSettings{'console_prefix'}." -> ";
 	my $usrCommand = <>;
-	$usrCommand =~ s/[\$#@~!&*;,?^\|`\\]+//g; # Filter un-wanted symbols to avoid
-						  # accidental command injection
+	$usrCommand =~ s/[\$#@~!&*;,?^\|`\\\n]+//g; # Filter un-wanted symbols to avoid
+						    # accidental command injection
         &ProcessCommand($usrCommand);
 }
 
 sub ProcessCommand(){
 	my($usrInput) = $_[0];
-	$usrInput =~ s/\n//;
+	#$usrInput =~ s/\n//;
 
 	my(@usrTokens) = split(/\s+/,$usrInput);
-	$usrCommand = shift(@usrTokens);
+	my $usrCommand = shift(@usrTokens);
 
         if (exists $hFunctions{$usrCommand}){ &{$hFunctions{$usrCommand}}(@usrTokens); }
         else { &printError("Command not found"); }
