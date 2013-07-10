@@ -106,35 +106,42 @@ sub listContents(){
 }
 # compresses given files into a tar archive
 sub packFiles(){
-	my($sArchiveName, $sFiles) = @_;
-	my $sFlags;
+	if(@_ == 2){
+		my($sArchiveName, $sFiles) = @_;
+		my $sFlags;
 
-	if($hSettings{'tar_verbose'}) { $sFlags = '-zcvf'; }
-	else { $sFlags = 'zcf'; }
+		if($hSettings{'tar_verbose'}) { $sFlags = '-zcvf'; }
+		else { $sFlags = 'zcf'; }
 
-	&exeSysCmd("tar $sFlags $sArchiveName.tar.gz $sFiles");
+		&exeSysCmd("tar $sFlags $sArchiveName.tar.gz $sFiles");
+	}
+	else{ &printError("Invalid number of arguments received");}
 	return;
 }
 # extracts given tar archive at required destination
 sub unpackFiles(){
-	my($sArchiveName, $sTargetDir) = @_;
-	my $sFlags;
+	if(@_ == 2){
+		my($sArchiveName, $sTargetDir) = @_;
+		my $sFlags;
 
-	if($hSettings{'tar_verbose'}) { $sFlags = '-zxvf'; }
-	else { $sFlags = 'zxf'; }
+		if($hSettings{'tar_verbose'}) { $sFlags = '-zxvf'; }
+		else { $sFlags = 'zxf'; }
 
-	my $sCwd = getcwd();
-	if(-e $sArchiveName){
-		&exeSysCmd("cp $sArchiveName $sTargetDir");
-		if(-e "$sTargetDir/$sArchiveName"){
-			chdir($sTargetDir);
-			&exeSysCmd("tar $sFlags $sArchiveName");
-			&exeSysCmd("rm $sArchiveName");
-			chdir($sCwd);
+		my $sCwd = getcwd();
+		if(-e $sArchiveName){
+			&exeSysCmd("cp $sArchiveName $sTargetDir");
+			if(-e "$sTargetDir/$sArchiveName"){
+				chdir($sTargetDir);
+				&exeSysCmd("tar $sFlags $sArchiveName");
+				&exeSysCmd("rm $sArchiveName");
+				chdir($sCwd);
+			}
+			else{ &printError("An error occured while copying the archive"); return; }
 		}
-		else{ &printError("An error occured while copying the archive"); return; }
+		else{ &printError("Archive [$sArchiveName] not found"); return; }
 	}
-	else{ &printError("Archive [$sArchiveName] not found"); return; }
+	else { &printError("Invalid number of arguments received"); return; }
+	return
 }
 # returns a list of all installation images
 sub getInstallations(){
@@ -189,8 +196,11 @@ sub ListInstallations(){
 }
 
 sub Echo(){
-	foreach my $Token (@_){ print $Token." "; }
-	print "\n";
+	if(@_ > 0){
+		foreach my $Token (@_){ print $Token." "; }
+		print "\n";
+	}
+	else { &printError("Nothing to echo"); }
 	return;
 }
 ##
