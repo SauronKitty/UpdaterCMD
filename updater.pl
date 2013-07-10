@@ -101,6 +101,26 @@ sub packFiles(){
 	&exeSysCmd("tar $sFlags $sArchiveName.tar.gz $sFiles");
 	return;
 }
+sub unpackFiles(){
+	my($sArchiveName, $sTargetDir) = @_;
+	my $sFlags;
+
+	if($hSettings{'tar_verbose'}) { $sFlags = '-zxvf'; }
+	else { $sFlags = 'zxf'; }
+
+	my $sCwd = getcwd();
+	if(-e $sArchiveName){
+		&exeSysCmd("cp $sArchiveName $sTargetDir");
+		if(-e "$sTargetDir/$sArchiveName"){
+			chdir($sTargetDir);
+			&exeSysCmd("tar $sFlags $sArchiveName");
+			&exeSysCmd("rm $sArchiveName");
+			chdir($sCwd);
+		}
+		else{ printError("An error occured while copying the archive"); return; }
+	}
+	else{ printError("Archive [$sArchiveName] not found"); return; }
+}
 # returns a list of all installation images
 sub getInstallations(){
 	return <$sImageDir/$sDirPrefix*>;
@@ -108,7 +128,7 @@ sub getInstallations(){
 # prints an error message to the user
 sub printError(){
 	my($sErrorMsg) = @_;
-	print($hSettings{'error_prefix'}.$hSettings{'error_seperator'}.$sErrorMsg.'\n');
+	print($hSettings{'error_prefix'}.$hSettings{'error_seperator'}.$sErrorMsg."\n");
 	return;
 }
 # returns date in the YYYY.MM.DD format
