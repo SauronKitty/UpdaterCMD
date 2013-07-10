@@ -22,10 +22,6 @@ $sLogFileDir = "left4dead2/addons/sourcemod/logs";
 	"left4dead2/cfg/Server.cfg"
 );
 
-@sLogFileList = (
-	"-C left4dead2/addons/sourcemod/logs ."
-);
-
 @sPayloadFileList = (
 	"left4dead2/addons",
 	"left4dead2/cfg/em_cfg",
@@ -165,7 +161,6 @@ sub GenConf(){
 
 		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image number
 		if(&isPrimary($1)) { next; } # Skip primary installation image
-		#&exeSysCmd("tar -zvcf $sCwd/$1.tar.gz ".join(' ', @sConfigFileList));
 		&compressTar($sCwd, $1, join(' ', @sConfigFileList));
 	}
 	chdir($sCwd);
@@ -185,7 +180,6 @@ sub GenLogArchive(){
 		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image number
 		if(&isPrimary($1)) { next; } # Skip primary installation image
 		&exeSysCmd("mkdir -p $sCwd/logs/$1");
-		#&exeSysCmd("tar -zvcf $sCwd/logs/$1/log-$1-".&getDate().".tar.gz -C $sLogFileDir");
 		&compressTar("$Cwd/logs/$1", "log-$1-".&getDate(), "-C $sLogFileDir");
 	}
 	chdir($sCwd);
@@ -199,7 +193,6 @@ sub GenPayload(){
 	my $sCwd = getcwd();
 
 	chdir($sImageDir.'/'.$sDirPrefix.$sPrimaryImage);
-	#&exeSysCmd("tar -zvcf $sCwd/em_payload-".&getDate().".tar.gz ".join(' ', @sPayloadFileList));
 	&compressTar($sCwd, "em_payload-".&getDate(), join(' ', @sPayloadFileList));
 	chdir($sCwd);
 }
