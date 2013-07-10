@@ -44,7 +44,14 @@ $sVersion = "0.1 [BETA]";
 	'genconf' 	=> \&GenConf,
 	'genpayload'	=> \&GenPayload,
 	'genlogarchive'	=> \&GenLogArchive,
+	'set',		=> \&SetUpdaterCvar,
         'exit' 		=> \&Exit,
+);
+
+%hSettings = (
+	'tar_verbose'	 => 1,
+	'console_prefix' => 'updater',
+	'error_prefix'	 => 'Error',
 );
 
 &CommandInput();
@@ -54,7 +61,7 @@ $sVersion = "0.1 [BETA]";
 #############
 
 sub CommandInput(){
-	print "updater -> ";
+	print $hSettings{'console_prefix'}." -> ";
         $usrCommand = <>;
         &ProcessCommand($usrCommand);
 }
@@ -67,7 +74,7 @@ sub ProcessCommand(){
 	$usrCommand = shift(@usrTokens);
 
         if (exists $hFunctions{$usrCommand}){ &{$hFunctions{$usrCommand}}(@usrTokens); }
-        else { print "Command not found\n"; }
+        else { &printError("Command not found"); }
 
         &CommandInput();
 }
@@ -95,7 +102,7 @@ sub getInstallations(){
 # prints an error message to the user
 sub printError(){
 	my($sErrorMsg) = @_;
-	print("Error: $sErrorMsg\n");
+	print($hSettings{'error_prefix'}.": $sErrorMsg\n");
 	return;
 }
 # returns date in the YYYY.MM.DD format
@@ -195,6 +202,13 @@ sub GenPayload(){
 	chdir($sImageDir.'/'.$sDirPrefix.$sPrimaryImage);
 	&compressTar($sCwd, "em_payload-".&getDate(), join(' ', @sPayloadFileList));
 	chdir($sCwd);
+}
+sub SetUpdaterCvar{
+	my($sSetting, $sNewValue) = @_;
+	if(@_ != 2) { &printError("Invalid number of arguments"); return; }
+	if (exists $hSettings{$sSetting}){ $hSettings{$sSetting} = $sNewValue; }
+	else { &printError("Cvar not found"); return; }
+	return;
 }
 ##
 # Terminates the application
