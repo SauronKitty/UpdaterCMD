@@ -14,6 +14,8 @@ $sPrimaryImage 	= "00";
 # e.g:
 # Instead of using "./direcotry/xyz" use "directory/xyz"
 
+$sLogFileDir = "left4dead2/addons/sourcemod/logs";
+
 @sConfigFileList = (
 	"start*",
 	"left4dead2/addons/sourcemod/configs/sourcebans/sourcebans.cfg",
@@ -78,23 +80,39 @@ sub ProcessCommand(){
 ## Engine ##
 ############
 
+# executes a shell command
+sub exeSysCmd(){
+	my($sCmd) = @_;
+	system("$sCmd\n");
+	return;
+}
+# compresses given files into a tar archive
+sub compressTar(){
+	my($sDestination, $sArchiveName, $sFiles) = @_;
+	&exeSysCmd("tar -zcvf $sDestination/$sArchiveName.tar.gz $sFiles");
+	return;
+}
+# returns a list of all installation images
 sub getInstallations(){
 	return <$sImageDir/$sDirPrefix*>;
 }
-
+# prints an error message to the user
 sub printError(){
 	my($sErrorMsg) = @_;
 	print("Error: $sErrorMsg\n");
 	return;
 }
-
+# returns date in the YYYY.MM.DD format
 sub getDate(){
 	my($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 	$year += 1900; # Year is returned as a value starting from 1900, therefore we must
-		       # add 1900 to calculate present date
+		       # add 1900 to calculate present date.
+	$mon += 1;     # Months start from 0, therefore we must add 1
 	return("$year.$mon.$mday");
 }
-
+# checks whether or not an installation folder
+# is a primary installation image or not. Returns
+# 1 if it is, 0 otherwise
 sub isPrimary(){
 	my($sDirName) = @_;
 	if($sDirName eq $sDirPrefix.$sPrimaryImage){
@@ -147,7 +165,8 @@ sub GenConf(){
 
 		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image number
 		if(&isPrimary($1)) { next; } # Skip primary installation image
-		system("tar -zvcf $sCwd/$1.tar.gz ".join(' ', @sConfigFileList)."\n");
+		#&exeSysCmd("tar -zvcf $sCwd/$1.tar.gz ".join(' ', @sConfigFileList));
+		&compressTar($sCwd, $1, join(' ', @sConfigFileList));
 	}
 	chdir($sCwd);
 	return;
@@ -165,7 +184,9 @@ sub GenLogArchive(){
 
 		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image number
 		if(&isPrimary($1)) { next; } # Skip primary installation image
-		system("mkdir -p $sCwd/logs/$1; tar -zvcf $sCwd/logs/$1/log-$1-".&getDate().".tar.gz ".join(' ', @sLogFileList)."\n");
+		&exeSysCmd("mkdir -p $sCwd/logs/$1");
+		#&exeSysCmd("tar -zvcf $sCwd/logs/$1/log-$1-".&getDate().".tar.gz -C $sLogFileDir");
+		&compressTar("$Cwd/logs/$1", "log-$1-".&getDate(), "-C $sLogFileDir");
 	}
 	chdir($sCwd);
 	return;
@@ -178,7 +199,8 @@ sub GenPayload(){
 	my $sCwd = getcwd();
 
 	chdir($sImageDir.'/'.$sDirPrefix.$sPrimaryImage);
-	system("tar -zvcf $sCwd/em_payload-".&getDate().".tar.gz ".join(' ', @sPayloadFileList)."\n");
+	#&exeSysCmd("tar -zvcf $sCwd/em_payload-".&getDate().".tar.gz ".join(' ', @sPayloadFileList));
+	&compressTar($sCwd, "em_payload-".&getDate(), join(' ', @sPayloadFileList));
 	chdir($sCwd);
 }
 ##
