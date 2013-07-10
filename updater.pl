@@ -35,8 +35,6 @@ $sLogFileDir = "left4dead2/addons/sourcemod/logs";
 ## Variables ##
 ###############
 
-$sVersion = "0.3";
-
 %hFunctions = (
 	'help' 		=> \&DisplayHelp,
 	'scan' 		=> \&ListInstallations,
@@ -49,11 +47,12 @@ $sVersion = "0.3";
 );
 
 %hSettings = (
-	'version'	 => 0.3,
-	'sys_name'	 => 'eM-UpdaterCMD',
-	'tar_verbose'	 => 1,
-	'console_prefix' => 'updater',
-	'error_prefix'	 => 'Error',
+	'version'	  => 0.3,
+	'sys_name'	  => 'eM-UpdaterCMD',
+	'tar_verbose'	  => 1,
+	'console_prefix'  => 'UpdaterCMD',
+	'error_prefix'	  => 'Error',
+	'error_seperator' => ': ',
 );
 
 &CommandInput();
@@ -109,7 +108,7 @@ sub getInstallations(){
 # prints an error message to the user
 sub printError(){
 	my($sErrorMsg) = @_;
-	print($hSettings{'error_prefix'}.": $sErrorMsg\n");
+	print($hSettings{'error_prefix'}.$hSettings{'error_seperator'}.$sErrorMsg.'\n');
 	return;
 }
 # returns date in the YYYY.MM.DD format
@@ -125,11 +124,8 @@ sub getDate(){
 # 1 if it is, 0 otherwise
 sub isPrimary(){
 	my($sDirName) = @_;
-	if($sDirName eq $sDirPrefix.$sPrimaryImage){
-		return 1;
-	} else{
-		return 0;
-	}
+	if($sDirName eq $sDirPrefix.$sPrimaryImage){ return 1; } 
+	else{ return 0; }
 }
 
 ##############
@@ -210,6 +206,10 @@ sub GenPayload(){
 	&packFiles("$sCwd/em_payload-".&getDate(), join(' ', @sPayloadFileList));
 	chdir($sCwd);
 }
+##
+# Updates a value in the %hSettings hash.
+#
+##
 sub SetUpdaterCvar{
 	my($sSetting, $sNewValue) = @_;
 	if(@_ != 2) { &printError("Invalid number of arguments"); return; }
