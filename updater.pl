@@ -1,34 +1,32 @@
 #!/usr/bin/perl
 
 use Cwd;
+use Term::ANSIColor;
 
 #####################
 ## Default Profile ##
 #####################
 
-$sImageDir 	= "/home/evilmaniac/Documents/updater-test";
-$sDirPrefix 	= "l4d2_";
-$sPrimaryImage 	= "00";
-
-# FileLists should not contain a forward slash at the beginning
-# e.g:
-# Instead of using "./direcotry/xyz" use "directory/xyz"
-
-$sLogFileDir = "left4dead2/addons/sourcemod/logs";
-
-@sConfigFileList = (
-	"start*",
-	"left4dead2/addons/sourcemod/configs/sourcebans/sourcebans.cfg",
-	"left4dead2/cfg/Server.cfg"
-);
-
-@sPayloadFileList = (
-	"left4dead2/addons",
-	"left4dead2/cfg/em_cfg",
-	"left4dead2/cfg/Server.cfg",
-	"left4dead2/cfg/sourcemod",
-	"left4dead2/em_motd.txt",
-	"left4dead2/em_host.txt"
+%hProfiles = (
+	'l4d2'	=> {
+			'DirImage'	 => '/home/evilmaniac/Documents/updater-test',
+			'ImagePrefix'	 => 'l4d2_',
+			'PrimaryImage'   => '00',
+			'DirLogs'	 => 'left4dead2/addons/sourcemod/logs',
+			'DirListConf'	 => [
+					     	'start*',
+						'left4dead2/addons/sourcemod/configs/sourcebans/sourcebans.cfg',
+						'left4dead2/cfg/Server.cfg'
+					    ],
+			'DirListPayload' => [
+						'left4dead2/addons',
+						'left4dead2/cfg/em_cfg',
+						'left4dead2/cfg/Server.cfg',
+						'left4dead2/cfg/sourcemod',
+						'left4dead2/em_motd.txt',
+						'left4dead2/em_host.txt'
+					    ],
+		   }
 );
 
 ###############
@@ -54,6 +52,12 @@ $sLogFileDir = "left4dead2/addons/sourcemod/logs";
 	'console_prefix'  => 'UpdaterCMD',
 	'error_prefix'	  => 'Error',
 	'error_seperator' => ': ',
+	'exit_message'	  => 'Terminating...',
+);
+
+%hColors = (
+	'error_prefix'	  => 'red',
+	'status'	  => '',
 );
 
 &CommandInput();
@@ -144,12 +148,12 @@ sub unpackFiles(){
 }
 # returns a list of all installation images
 sub getInstallations(){
-	return <$sImageDir/$sDirPrefix*>;
+	return <$hProfiles{'l4d2'}{'DirImage'}/$hProfiles{'l4d2'}{'ImagePrefix'}*>;
 }
 # prints an error message to the user
 sub printError(){
 	my($sErrorMsg) = @_;
-	print($hSettings{'error_prefix'}.$hSettings{'error_seperator'}.$sErrorMsg."\n");
+	print(colored(['red'],$hSettings{'error_prefix'}).$hSettings{'error_seperator'}.$sErrorMsg."\n");
 	return;
 }
 # returns date in the YYYY.MM.DD format
@@ -165,7 +169,7 @@ sub getDate(){
 # 1 if it is, 0 otherwise
 sub isPrimary(){
 	my($sDirName) = @_;
-	if($sDirName eq $sDirPrefix.$sPrimaryImage){ return 1; } 
+	if($sDirName eq $hProfiles{'l4d2'}{'ImagePrefix'}.$hProfiles{'l4d2'}{'PrimaryImage'}){ return 1; } 
 	else{ return 0; }
 }
 
@@ -193,7 +197,10 @@ sub ListInstallations(){
 	}
 	return;
 }
-
+###
+# Displays all arguments passed onto a cmd. Used for debugging
+# purposes.
+###
 sub Echo(){
 	if(@_ > 0){
 		foreach my $Token (@_){ print $Token." "; }
@@ -215,7 +222,7 @@ sub GenConf(){
 
 		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image number
 		if(&isPrimary($1)) { next; } # Skip primary installation image
-		&packFiles("$sCwd/$1", join(' ', @sConfigFileList));
+		&packFiles("$sCwd/$1", join(' ', @{$hProfiles{'l4d2'}{'DirListConf'}}));
 	}
 	chdir($sCwd);
 	return;
@@ -234,7 +241,7 @@ sub GenLogArchive(){
 		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image number
 		if(&isPrimary($1)) { next; } # Skip primary installation image
 		&exeSysCmd("mkdir -p $sCwd/logs/$1");
-		&packFiles("$Cwd/logs/$1/log-$1-".&getDate(), "-C $sLogFileDir");
+		&packFiles("$Cwd/logs/$1/log-$1-".&getDate(), "-C ".$hProfiles{'l4d2'}{'DirLogs'});
 	}
 	chdir($sCwd);
 	return;
@@ -246,8 +253,8 @@ sub GenLogArchive(){
 sub GenPayload(){
 	my $sCwd = getcwd();
 
-	chdir($sImageDir.'/'.$sDirPrefix.$sPrimaryImage);
-	&packFiles("$sCwd/em_payload-".&getDate(), join(' ', @sPayloadFileList));
+	chdir($hProfiles{'l4d2'}{'DirImage'}.'/'.$hProfiles{'l4d2'}{'ImagePrefix'}.$hProfiles{'l4d2'}{'PrimaryImage'});
+	&packFiles("$sCwd/em_payload-".&getDate(), join(' ', @{$hProfiles{'l4d2'}{'DirListPayload'}}));
 	chdir($sCwd);
 }
 sub ApplyPatch{
@@ -288,6 +295,6 @@ sub SetUpdaterCvar{
 #
 ##
 sub Exit(){
-        print("Terminating. . .\n");
+	print($hSettings{'exit_message'}."\n");
 	exit(0);
 }
