@@ -205,8 +205,8 @@ sub DisplayHelp(){
 	return;
 }
 ##
-# Lists all installations in the $sImageDir directory including
-# primary installation and all forked installations
+# Lists all installations in the hProfiles.game.DirImage directory 
+# including primary installation and all forked installations
 ##
 sub ListInstallations(){
 	my @sDirs = getInstallations();
@@ -229,7 +229,7 @@ sub Echo(){
 }
 ##
 # Generates configuration file images from the forked installation
-# images. Includes all files in the @sConfigFileList array
+# images. Includes all files in the hProfiles.game.'DirListConf' array
 ##
 sub GenConf(){
 	my $sCwd  = getcwd();
@@ -238,7 +238,7 @@ sub GenConf(){
 	foreach my $sDir (@sDirs){
 		chdir($sDir);
 
-		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image number
+		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image id
 		if(&isPrimary($1)) { next; } # Skip primary installation image
 		&packFiles("$sCwd/$1", join(' ', @{$hProfiles{'l4d2'}{'DirListConf'}}));
 	}
@@ -247,7 +247,8 @@ sub GenConf(){
 }
 ###
 # Generated a back up of each server's log files
-# TODO chdir must change to absolute directory path (where the logs are stored)
+# TODO chdir must change to absolute directory path
+# (where the logs are stored)
 ###
 sub GenLogArchive(){
 	my $sCwd  = getcwd();
@@ -266,7 +267,8 @@ sub GenLogArchive(){
 }
 ##
 # Generates a payload image from the primary installation
-# Includes all files dictated in the @sPayloadFileList array
+# Includes all files in the hProfiles.game.DirListPayload 
+# array
 ##
 sub GenPayload(){
 	my $sCwd = getcwd();
@@ -275,6 +277,10 @@ sub GenPayload(){
 	&packFiles("$sCwd/em_payload-".&getDate(), join(' ', @{$hProfiles{'l4d2'}{'DirListPayload'}}));
 	chdir($sCwd);
 }
+##
+# Applies a .tar.gz patch archive to all installation images
+#
+##
 sub ApplyPatch{
 	if(@_ == 1){
 		my($sArchiveName) = @_;
