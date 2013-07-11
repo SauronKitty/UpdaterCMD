@@ -84,7 +84,7 @@ use Term::ANSIColor;
 
 %hColors = (
 	'error_prefix'	  => 'red',
-	'exit_message'	  => '',
+	'exit_message'	  => 'bold',
 );
 
 &CommandInput();
@@ -173,6 +173,16 @@ sub unpackFiles(){
 	else { &printError("Invalid number of arguments received"); return; }
 	return
 }
+# returns the folder name from a given path
+sub getFolderName(){
+	if(@_ == 1){
+		my($sDirPath) = @_;
+		if(-d $sDirPath) { $sDirPath =~ /^.+\/(.+)$/; return($1); }
+		else{ &printError("Received argument is not a directory path, or director does not exist"); }
+	}
+	else { &printError("Invalid number of arguments"); }
+	return
+}
 # returns a list of all installation images
 sub getInstallations(){
 	return <$hProfiles{$hSettings{'profile'}}{'DirImage'}/$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}*>;
@@ -247,8 +257,8 @@ sub GenConf(){
 	foreach my $sDir (@sDirs){
 		chdir($sDir);
 
-		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image id
-		if(&isPrimary($1)) { next; } # Skip primary installation image
+		#$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image id
+		if(&isPrimary(&getFolderName($sDir))) { next; } # Skip primary installation image
 		&packFiles("$sCwd/$1", join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListConf'}}));
 	}
 	chdir($sCwd);
@@ -266,8 +276,7 @@ sub GenLogArchive(){
 	foreach my $sDir (@sDirs){
 		chdir($sDir);
 
-		$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image number
-		if(&isPrimary($1)) { next; } # Skip primary installation image
+		if(&isPrimary(&getFolderName($sDir))) { next; } # Skip primary installation image
 		&exeSysCmd("mkdir -p $sCwd/logs/$1");
 		&packFiles("$Cwd/logs/$1/log-$1-".&getDate(), "-C ".$hProfiles{$hSettings{'profile'}}{'DirLogs'});
 	}
@@ -333,6 +342,6 @@ sub SetUpdaterCvar{
 #
 ##
 sub Exit(){
-	print($hSettings{'exit_message'}."\n");
+	print(colored([$hColors{'exit_message'}], $hSettings{'exit_message'})."\n");
 	exit(0);
 }
