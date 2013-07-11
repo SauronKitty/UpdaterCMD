@@ -95,7 +95,7 @@ use Term::ANSIColor;
 );
 
 %hSettings = (
-	'version'	  => 0.70,
+	'version'	  => 0.71,
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'tar_verbose'	  => 1,
@@ -109,6 +109,7 @@ use Term::ANSIColor;
 	'error_prefix'	  => 'red',
 	'exit_message'	  => 'bold',
 	'help_command'	  => 'bold',
+	'help_title'	  => 'underline'
 );
 
 &CommandInput();
@@ -243,7 +244,7 @@ sub isPrimary(){
 #
 ##
 sub DisplayHelp(){
-	print $hSettings{'sys_name'}." | v".$hSettings{'version'}."\n\n".colored(['underline'], Commands).":\n";
+	print $hSettings{'sys_name'}." | v".$hSettings{'version'}."\n\n".colored([$hColors{'help_title'}], Commands).":\n";
 	foreach my $Key (keys %hFunctions){
 		printf("- %s: %s\n", colored([$hColors{'help_command'}], $Key), $hFunctions{$Key}{'desc'});
 	}
