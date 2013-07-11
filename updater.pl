@@ -56,15 +56,42 @@ use Term::ANSIColor;
 ###############
 
 %hFunctions = (
-	'help' 		=> \&DisplayHelp,
-	'scan' 		=> \&ListInstallations,
-	'echo' 		=> \&Echo,
-	'genconf' 	=> \&GenConf,
-	'genpayload'	=> \&GenPayload,
-	'genlogarchive'	=> \&GenLogArchive,
-	'patch'		=> \&ApplyPatch,
-	'set',		=> \&SetUpdaterCvar,
-        'exit' 		=> \&Exit,
+	'help' 		=> {
+			    	'ref'	=> \&DisplayHelp,
+				'desc'	=> 'Displays this message'
+			   },
+	'scan' 		=> {
+				'ref'	=> \&ListInstallations,
+				'desc'	=> 'Scans if the currently set profile has any installation images'
+			   },
+	'echo' 		=> {
+				'ref'	=> \&Echo,
+				'desc'	=> 'Prints any arguments passed'
+			   },
+	'genconf' 	=> {
+			   	'ref'	=> \&GenConf,
+				'desc'	=> 'Generates a configuration archive for each detected isntallation image'
+			   },
+	'genpayload'	=> {
+			   	'ref'	=> \&GenPayload,
+				'desc'	=> 'Generates a complete payload, used to patch a freshly installed primary image'
+			   },
+	'genlog'	=> {
+				'ref'	=> \&GenLogArchive,
+				'desc'	=> 'Generates an archive, storing all log files in an archive'
+			   },
+	'patch'		=> {
+				'ref'	=> \&ApplyPatch,
+				'desc'	=> 'Applies a .tar.gz patch file to all detected installation images'
+			   },
+	'set',		=> {
+				'ref'	=> \&SetUpdaterCvar,
+				'desc'	=> 'Modifies a Cvar. Usage: set <cvar> <value>'
+			   },
+        'exit' 		=> {
+				'ref'	=> \&Exit,
+				'desc'	=> 'Terminates the UpdaterCMD'
+			   }
 );
 
 %hSettings = (
@@ -81,6 +108,7 @@ use Term::ANSIColor;
 %hColors = (
 	'error_prefix'	  => 'red',
 	'exit_message'	  => 'bold',
+	'help_command'	  => 'bold',
 );
 
 &CommandInput();
@@ -103,7 +131,7 @@ sub ProcessCommand(){
 	my(@usrTokens) = split(/\s+/,$usrInput);
 	my $usrCommand = shift(@usrTokens);
 
-        if (exists $hFunctions{$usrCommand}){ &{$hFunctions{$usrCommand}}(@usrTokens); }
+        if (exists $hFunctions{$usrCommand}){ &{$hFunctions{$usrCommand}{'ref'}}(@usrTokens); }
         else { &printError("Command not found"); }
 
         &CommandInput();
@@ -215,8 +243,10 @@ sub isPrimary(){
 #
 ##
 sub DisplayHelp(){
-	print $hSettings{'sys_name'}." | v".$hSettings{'version'}."\n\nCommands:\n";
-	foreach my $Key (keys %hFunctions){ print $Key."\n"; }
+	print $hSettings{'sys_name'}." | v".$hSettings{'version'}."\n\n".colored(['underline'], Commands).":\n";
+	foreach my $Key (keys %hFunctions){
+		printf("- %s: %s\n", colored([$hColors{'help_command'}], $Key), $hFunctions{$Key}{'desc'});
+	}
 	return;
 }
 ##
