@@ -1,12 +1,8 @@
-##############################
-##                          ##
-## eM-UpdaterCMD            ##
-## Written by evilmaniac    ##
-## http://www.evilmania.net ##
-##                          ##
-##############################
-
 #!/usr/bin/perl
+
+# eM-UpdaterCMD
+# Written by evilmaniac
+# http://www.evilmania.net
 
 use Cwd;
 use Term::ANSIColor;
@@ -257,7 +253,6 @@ sub GenConf(){
 	foreach my $sDir (@sDirs){
 		chdir($sDir);
 
-		#$sDir =~ /^.+\/(.+)$/; # Calculate image number e.g. l4d2_XX where XX is the image id
 		if(&isPrimary(&getFolderName($sDir))) { next; } # Skip primary installation image
 		&packFiles("$sCwd/$1", join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListConf'}}));
 	}
