@@ -57,40 +57,40 @@ use Term::ANSIColor;
 
 %hFunctions = (
 	'help' 		=> {
-			    	'ref'	=> \&DisplayHelp,
-				'desc'	=> 'Displays this message'
+			    	'Refrence'	=> \&DisplayHelp,
+				'Description'	=> 'Displays this message'
 			   },
 	'scan' 		=> {
-				'ref'	=> \&ListInstallations,
-				'desc'	=> 'Scans if the currently set profile has any installation images'
+				'Refrence'	=> \&ListInstallations,
+				'Description'	=> 'Scans if the currently set profile has any installation images'
 			   },
 	'echo' 		=> {
-				'ref'	=> \&Echo,
-				'desc'	=> 'Prints any arguments passed'
+				'Refrence'	=> \&Echo,
+				'Description'	=> 'Prints any arguments passed'
 			   },
 	'genconf' 	=> {
-			   	'ref'	=> \&GenConf,
-				'desc'	=> 'Generates a configuration archive for each detected isntallation image'
+			   	'Refrence'	=> \&GenConf,
+				'Description'	=> 'Generates a configuration archive for each detected isntallation image'
 			   },
 	'genpayload'	=> {
-			   	'ref'	=> \&GenPayload,
-				'desc'	=> 'Generates a complete payload, used to patch a freshly installed primary image'
+			   	'Refrence'	=> \&GenPayload,
+				'Description'	=> 'Generates a complete payload, used to patch a freshly installed primary image'
 			   },
 	'genlog'	=> {
-				'ref'	=> \&GenLogArchive,
-				'desc'	=> 'Generates an archive, storing all log files in an archive'
+				'Refrence'	=> \&GenLogArchive,
+				'Description'	=> 'Generates an archive, storing all log files in an archive'
 			   },
 	'patch'		=> {
-				'ref'	=> \&ApplyPatch,
-				'desc'	=> 'Applies a .tar.gz patch file to all detected installation images'
+				'Refrence'	=> \&ApplyPatch,
+				'Description'	=> 'Applies a .tar.gz patch file to all detected installation images'
 			   },
 	'set',		=> {
-				'ref'	=> \&SetUpdaterCvar,
-				'desc'	=> 'Modifies a Cvar. Usage: set <cvar> <value>'
+				'Refrence'	=> \&SetUpdaterCvar,
+				'Description'	=> 'Modifies a Cvar. Usage: set <cvar> <value>'
 			   },
         'exit' 		=> {
-				'ref'	=> \&Exit,
-				'desc'	=> 'Terminates the UpdaterCMD'
+				'Refrence'	=> \&Exit,
+				'Description'	=> 'Terminates the UpdaterCMD'
 			   }
 );
 
@@ -132,7 +132,7 @@ sub ProcessCommand(){
 	my(@usrTokens) = split(/\s+/,$usrInput);
 	my $usrCommand = shift(@usrTokens);
 
-        if (exists $hFunctions{$usrCommand}){ &{$hFunctions{$usrCommand}{'ref'}}(@usrTokens); }
+        if (exists $hFunctions{$usrCommand}){ &{$hFunctions{$usrCommand}{'Refrence'}}(@usrTokens); }
         else { &printError("Command not found"); }
 
         &CommandInput();
@@ -246,7 +246,7 @@ sub isPrimary(){
 sub DisplayHelp(){
 	print $hSettings{'sys_name'}." | v".$hSettings{'version'}."\n\n".colored([$hColors{'help_title'}], Commands).":\n";
 	foreach my $Key (keys %hFunctions){
-		printf("- %s: %s\n", colored([$hColors{'help_command'}], $Key), $hFunctions{$Key}{'desc'});
+		printf("- %s: %s\n", colored([$hColors{'help_command'}], $Key), $hFunctions{$Key}{'Description'});
 	}
 	return;
 }
