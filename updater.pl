@@ -95,7 +95,7 @@ use Term::ANSIColor;
 );
 
 %hSettings = (
-	'version'	  => 0.71,
+	'version'	  => 0.72,
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'tar_verbose'	  => 1,
@@ -214,8 +214,10 @@ sub getInstallations(){
 }
 # prints an error message to the user
 sub printError(){
-	my($sErrorMsg) = @_;
-	print(colored([$hColors{'error_prefix'}],$hSettings{'error_prefix'}).$hSettings{'error_seperator'}.$sErrorMsg."\n");
+	if(@_ == 1){
+		my($sErrorMsg) = @_;
+		print(colored([$hColors{'error_prefix'}], $hSettings{'error_prefix'}).$hSettings{'error_seperator'}.$sErrorMsg."\n");
+	} else { &printError("Invalid number of arguments"); }
 	return;
 }
 # returns date in the YYYY.MM.DD format
