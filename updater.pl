@@ -144,8 +144,11 @@ sub ProcessCommand(){
 
 # executes a shell command
 sub exeSysCmd(){
-	my($sCmd) = @_;
-	system("$sCmd\n");
+	if(@_ == 1){
+		my($sCmd) = @_;
+		system("$sCmd\n");
+	}
+	else { &printError("Invalid number of arguments"); }
 	return;
 }
 # lists contents of a compressed tar archive
