@@ -133,7 +133,7 @@ sub ProcessCommand(){
 	my $usrCommand = shift(@usrTokens);
 
         if (exists $hFunctions{$usrCommand}){ &{$hFunctions{$usrCommand}{'Refrence'}}(@usrTokens); }
-        else { &printError("Command not found"); }
+        else { &printError("Command not found", __LINE__); }
 
         &CommandInput();
 }
@@ -148,7 +148,7 @@ sub exeSysCmd(){
 		my($sCmd) = @_;
 		system("$sCmd\n");
 	}
-	else { &printError("Invalid number of arguments"); }
+	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
 }
 # lists contents of a compressed tar archive
@@ -157,9 +157,9 @@ sub listContents(){
 		my($sArchiveName) = @_[0];
 
 		if(-e $sArchiveName){ &exeSysCmd("tar -ztvf $sArchiveName"); }
-		else { &printError("Archive [$sArchiveName] not found"); }
+		else { &printError("Archive [$sArchiveName] not found", __LINE__); }
 	}
-	else { &printError("Archive name not specified"); }
+	else { &printError("Archive name not specified", __LINE__); }
 	return;
 }
 # compresses given files into a tar archive
@@ -173,7 +173,7 @@ sub packFiles(){
 
 		&exeSysCmd("tar $sFlags $sArchiveName.tar.gz $sFiles");
 	}
-	else{ &printError("Invalid number of arguments received");}
+	else{ &printError("Invalid number of arguments received", __LINE__); }
 	return;
 }
 # extracts given tar archive at required destination
@@ -194,11 +194,11 @@ sub unpackFiles(){
 				&exeSysCmd("rm $sArchiveName");
 				chdir($sCwd);
 			}
-			else{ &printError("An error occured while copying the archive"); return; }
+			else{ &printError("An error occured while copying the archive", __LINE__); return; }
 		}
-		else{ &printError("Archive [$sArchiveName] not found"); return; }
+		else{ &printError("Archive [$sArchiveName] not found", __LINE__); return; }
 	}
-	else { &printError("Invalid number of arguments received"); return; }
+	else { &printError("Invalid number of arguments received", __LINE__); return; }
 	return
 }
 # returns the folder name from a given path
@@ -206,9 +206,9 @@ sub getFolderName(){
 	if(@_ == 1){
 		my($sDirPath) = @_;
 		if(-d $sDirPath) { $sDirPath =~ /^.+\/(.+)$/; return($1); }
-		else{ &printError("Received argument is not a directory path, or director does not exist"); }
+		else{ &printError("Received argument is not a directory path, or director does not exist", __LINE__); }
 	}
-	else { &printError("Invalid number of arguments"); }
+	else { &printError("Invalid number of arguments", __LINE__); }
 	return
 }
 # returns a list of all installation images
@@ -217,10 +217,10 @@ sub getInstallations(){
 }
 # prints an error message to the user
 sub printError(){
-	if(@_ == 1){
-		my($sErrorMsg) = @_;
-		print(colored([$hColors{'error_prefix'}], $hSettings{'error_prefix'}).$hSettings{'error_seperator'}.$sErrorMsg."\n");
-	} else { &printError("Invalid number of arguments"); }
+	if(@_ == 2){
+		my($sErrorMsg, $iLineNum) = @_;
+		print(colored([$hColors{'error_prefix'}], $hSettings{'error_prefix'}).$hSettings{'error_seperator'}.$sErrorMsg." ($iLineNum)\n");
+	} else { &printError("Invalid number of arguments", __LINE__); }
 	return;
 }
 # returns date in the YYYY.MM.DD format
@@ -240,7 +240,7 @@ sub isPrimary(){
 		if($sDirName eq $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'}){ return 1; } 
 		else{ return 0; }
 	}
-	else { &printError("Invalid number of arguments"); }
+	else { &printError("Invalid number of arguments", __LINE__); }
 }
 
 ##############
@@ -278,7 +278,7 @@ sub Echo(){
 		foreach my $Token (@_){ print $Token." "; }
 		print "\n";
 	}
-	else { &printError("Nothing to echo"); }
+	else { &printError("Nothing to echo", __LINE__); }
 	return;
 }
 ##
@@ -345,11 +345,11 @@ sub ApplyPatch{
 			if($sUsrReply =~ /^[Y]?$/i){
 				foreach $sDir (@sDirs){ &unpackFiles($sArchiveName, $sDir); }
 			}
-			else { &printError("Patching aborted"); return; }
+			else { &printError("Patching aborted", __LINE__); return; }
 		}
-		else { &printError("No installation images found"); }
+		else { &printError("No installation images found", __LINE__); }
 	}
-	else { &printError("Archive name not specified"); }
+	else { &printError("Archive name not specified", __LINE__); }
 	return;
 }
 ##
@@ -362,13 +362,13 @@ sub SetUpdaterCvar{
 
 		if (exists $hSettings{$sSetting}){
 			if($sSetting eq 'profile'){
-				if(!exists $hProfiles{$sNewValue}){ &printError("Profile does not exist"); return; }
+				if(!exists $hProfiles{$sNewValue}){ &printError("Profile does not exist", __LINE__); return; }
 			}
 			$hSettings{$sSetting} = $sNewValue;
 		}
-		else { &printError("Cvar not found"); return; }
+		else { &printError("Cvar not found", __LINE__); return; }
 	}
-	else { &printError("Invalid number of arguments"); }
+	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
 }
 ##
