@@ -150,7 +150,7 @@ sub exeSysCmd(){
 }
 # lists contents of a compressed tar archive
 sub listContents(){
-	if(scalar @_ == 1){
+	if(@_ == 1){
 		my($sArchiveName) = @_[0];
 
 		if(-e $sArchiveName){ &exeSysCmd("tar -ztvf $sArchiveName"); }
@@ -232,9 +232,12 @@ sub getDate(){
 # is a primary installation image or not. Returns
 # 1 if it is, 0 otherwise
 sub isPrimary(){
-	my($sDirName) = @_;
-	if($sDirName eq $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'}){ return 1; } 
-	else{ return 0; }
+	if(@_ == 1)
+		my($sDirName) = @_;
+		if($sDirName eq $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'}){ return 1; } 
+		else{ return 0; }
+	}
+	else { &printError("Invalid number of arguments"); }
 }
 
 ##############
