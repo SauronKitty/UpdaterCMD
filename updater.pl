@@ -232,7 +232,7 @@ sub getDate(){
 # is a primary installation image or not. Returns
 # 1 if it is, 0 otherwise
 sub isPrimary(){
-	if(@_ == 1)
+	if(@_ == 1){
 		my($sDirName) = @_;
 		if($sDirName eq $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'}){ return 1; } 
 		else{ return 0; }
