@@ -310,7 +310,8 @@ sub unpackFiles(){
 			if(&fileExists("$sTargetDir/$sArchiveName")){
 				&changeDir($sTargetDir);
 				&exeSysCmd("tar $sFlags $sArchiveName");
-				&exeSysCmd("rm $sArchiveName");
+				&exeSysCmd("rm $sArchiveName"); # Using a direct system call as the &removeFile() function
+								# will check whether the file exists once again.
 				&changeDir($sCwd);
 			}
 			else{ &printError("An error occured while copying the archive", __LINE__); return; }
