@@ -247,9 +247,9 @@ sub getInstallations(){
 	return <$hProfiles{$hSettings{'profile'}}{'DirImage'}/$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}*>;
 }
 
-###
+##
 # Archive related functions
-###
+##
 
 # lists contents of a compressed tar archive
 sub listContents(){
