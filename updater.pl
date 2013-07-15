@@ -88,6 +88,10 @@ use Term::ANSIColor;
 				'Refrence'	=> \&SetUpdaterCvar,
 				'Description'	=> 'Modifies a Cvar. Usage: set <cvar> <value>'
 			   },
+	'spawnimage',	=> {
+				'Refrence'	=> \&SpawnImage,
+				'Description'	=> 'Spawns an additional installation image based on the initial one.'
+			   },
         'exit' 		=> {
 				'Refrence'	=> \&Exit,
 				'Description'	=> 'Terminates the UpdaterCMD'
@@ -239,9 +243,9 @@ sub forkImage(){
 		my $sDestination  = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
 				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
 				    $sImageSuffix;
-		unless(&dirExists($sDestination)){
+		unless(-e $sDestination){ # &dirExists() prints an error, which we do not want in this case
 			if(&dirExists($sPrimaryImage)){
-				&exeSysCmd("cp -Rl $sPrimaryImage $sDestination");
+				&exeSysCmd("cp -Rlv $sPrimaryImage $sDestination");
 			}
 			else { &printError("Unable to create an installation image", __LINE__); }
 		}
@@ -443,7 +447,7 @@ sub GenPayload(){
 # Applies a .tar.gz patch archive to all installation images
 #
 ##
-sub ApplyPatch{
+sub ApplyPatch(){
 	if(@_ == 1){
 		my($sArchiveName) = @_;
 		my @sDirs = &getInstallations();
@@ -466,8 +470,8 @@ sub ApplyPatch{
 # Updates a value in the %hSettings hash.
 #
 ##
-sub SetUpdaterCvar{
-	if(@_ == 2) {
+sub SetUpdaterCvar(){
+	if(@_ == 2){
 		my($sSetting, $sNewValue) = @_;
 
 		if (exists $hSettings{$sSetting}){
@@ -480,6 +484,21 @@ sub SetUpdaterCvar{
 		else { &printError("Cvar not found", __LINE__); }
 	}
 	else { &printError("Invalid number of arguments", __LINE__); }
+	return;
+}
+sub SpawnImage(){
+	if(@_ == 0){
+		my @sDirs = &getInstallations();
+		foreach my $sDir (@sDirs){
+			unless(&isPrimary(&getFolderName($sDir))){ print($sDir."\n"); }
+			else { print(colored(['bold'], $sDir)."\n"); }
+		}
+		print("Please insert a suffix for the image you wish to create: ");
+		my $sSuffix = <>;
+		print("Process started\n");
+		&forkImage($sSuffix);
+	}
+	else { &forkImage($_[0]); }
 	return;
 }
 ##
