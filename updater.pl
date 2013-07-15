@@ -204,6 +204,7 @@ sub forkImage(){
 		else { &printError("Image already exists", __LINE__); }
 	}
 	else { &printError("Invalid number or arguments", __LINE__); }
+	return;
 }
 # lists contents of a compressed tar archive
 sub listContents(){
