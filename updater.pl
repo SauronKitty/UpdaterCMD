@@ -95,7 +95,7 @@ use Term::ANSIColor;
 );
 
 %hSettings = (
-	'version'	  => 0.72,
+	'version'	  => 0.80,
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'tar_verbose'	  => 1,
@@ -167,7 +167,8 @@ sub rmDir(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
 }
-sub rm(){
+# removes a given file
+sub rmFile(){
 	if(@_ == 1){
 		my($sFile) = @_;
 		if(-e $sFile){
