@@ -182,6 +182,7 @@ sub rmFile(){
 	else { &printError("Invalid number or arguments", __LINE__); }
 	return;
 }
+# Will generate a derivative installation from the primary one. Takes 1 argument; the suffix to the image that will be created
 sub forkImage(){
 	if(@_ == 1){
 		my($sImageSuffix) = @_;
