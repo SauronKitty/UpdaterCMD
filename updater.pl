@@ -156,6 +156,19 @@ sub exeSysCmd(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
 }
+sub changeDir(){
+	if(@_ == 1){
+		my($sDir) = @_;
+		if(-e $sDir){
+			if(-d $sDir){
+				chdir($sDir) || &printError("Unable to change directory", __LINE__);
+			}
+			else { &printError("Given path is not a directory", __LINE__); }
+		}
+		else { &printError("Given path does not exist", __LINE__); }
+	}
+	else { &printError("Invalid number of arguments", __LINE__); }
+}
 # removes a given directory
 sub rmDir(){
 	if(@_ == 1){
@@ -273,10 +286,10 @@ sub unpackFiles(){
 		if(-e $sArchiveName){
 			&exeSysCmd("cp $sArchiveName $sTargetDir");
 			if(-e "$sTargetDir/$sArchiveName"){
-				chdir($sTargetDir);
+				&changeDir($sTargetDir);
 				&exeSysCmd("tar $sFlags $sArchiveName");
 				&exeSysCmd("rm $sArchiveName");
-				chdir($sCwd);
+				&changeDir($sCwd);
 			}
 			else{ &printError("An error occured while copying the archive", __LINE__); return; }
 		}
@@ -364,12 +377,12 @@ sub GenConf(){
 	my @sDirs = &getInstallations();
 
 	foreach my $sDir (@sDirs){
-		chdir($sDir);
+		&changeDir($sDir);
 
 		if(&isPrimary(&getFolderName($sDir))) { next; } # Skip primary installation image
 		&packFiles("$sCwd/$1", join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListConf'}}));
 	}
-	chdir($sCwd);
+	&changeDir($sCwd);
 	return;
 }
 ###
@@ -382,13 +395,13 @@ sub GenLogArchive(){
 	my @sDirs = &getInstallations();
 
 	foreach my $sDir (@sDirs){
-		chdir($sDir);
+		&changeDir($sDir);
 
 		if(&isPrimary(&getFolderName($sDir))) { next; } # Skip primary installation image
 		&exeSysCmd("mkdir -p $sCwd/logs/$1");
 		&packFiles("$Cwd/logs/$1/log-$1-".&getDate(), "-C ".$hProfiles{$hSettings{'profile'}}{'DirLogs'});
 	}
-	chdir($sCwd);
+	&changeDir($sCwd);
 	return;
 }
 ##
@@ -399,9 +412,9 @@ sub GenLogArchive(){
 sub GenPayload(){
 	my $sCwd = getcwd();
 
-	chdir($hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'});
+	&changeDir($hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'});
 	&packFiles("$sCwd/em_payload-".&getDate(), join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}));
-	chdir($sCwd);
+	&changeDir($sCwd);
 }
 ##
 # Applies a .tar.gz patch archive to all installation images
