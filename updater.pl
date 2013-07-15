@@ -156,6 +156,7 @@ sub exeSysCmd(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
 }
+# checks if a given file exists
 sub fileExists(){
 	if(@_ == 1){
 		my($sFile) = @_;
@@ -170,6 +171,7 @@ sub fileExists(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return 0;
 }
+# checks if a given folder exists
 sub dirExists(){
 	if(@_ == 1){
 		my($sDir) = @_;
@@ -184,6 +186,7 @@ sub dirExists(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return 0;
 }
+# changes pwd to the given dir
 sub changeDir(){
 	if(@_ == 1){
 		my($sDir) = @_;
