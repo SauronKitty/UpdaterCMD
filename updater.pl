@@ -112,7 +112,7 @@ use Term::ANSIColor;
 	'help_command'	  => 'bold',
 	'help_title'	  => 'underline'
 );
-&forkImage("12");
+
 &CommandInput();
 
 #############
