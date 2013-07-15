@@ -1,11 +1,4 @@
-Contents:
-=========
-O- Cvars
-O- Functions
-O- CMDs
-
 Cvars:
-======
 
 version			Sets the version number.
 profile			Sets the current profile to load. Value must be present in the %hProfiles hash.
@@ -16,9 +9,6 @@ console_prefix		Prefix to the console. Value must be a string.
 error_prefix		Error message prefix. Value must be a string.
 error_seperator		Seperator which sits between the error_prefix and the error message. Value must be a string or character.
 exit_message		Message displayed when exiting.
-
-Functions:
-==========
 
 exeSysCmd()
 rmDir()
