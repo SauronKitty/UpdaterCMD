@@ -13,6 +13,7 @@ exit_message		Message displayed when exiting.
 exeSysCmd()
 rmDir()
 rmFile()
+forkImage()
 listContents()
 packFiles()
 unpackFiles()
