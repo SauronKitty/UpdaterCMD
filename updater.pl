@@ -456,7 +456,7 @@ sub SetUpdaterCvar{
 			}
 			$hSettings{$sSetting} = $sNewValue;
 		}
-		else { &printError("Cvar not found", __LINE__); return; }
+		else { &printError("Cvar not found", __LINE__); }
 	}
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
