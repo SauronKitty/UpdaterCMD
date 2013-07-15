@@ -112,7 +112,7 @@ use Term::ANSIColor;
 	'help_command'	  => 'bold',
 	'help_title'	  => 'underline'
 );
-
+&forkImage("12");
 &CommandInput();
 
 #############
@@ -183,6 +183,23 @@ sub rmFile(){
 	return;
 }
 sub forkImage(){
+	if(@_ == 1){
+		my($sImageSuffix) = @_;
+		my $sPrimaryImage = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
+				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
+				    $hProfiles{$hSettings{'profile'}}{'PrimaryImage'};
+		if (-e $sPrimaryImage){
+			if(-d $sPrimaryImage){
+				my $sDestination  = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
+						    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
+						    $sImageSuffix;
+				&exeSysCmd("cp -Rl $sPrimaryImage $sDestination");
+			}
+			else { &printError("Given path is not a directory", __LINE__); }
+		}
+		else { &printError("Given path does not exist", __LINE__); }
+	}
+	else { &printError("Invalid number or arguments", __LINE__); }
 }
 # lists contents of a compressed tar archive
 sub listContents(){
