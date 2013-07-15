@@ -167,6 +167,21 @@ sub fileExists(){
 		}
 		else { &printError("Given file does not exist", __LINE__); }
 	}
+	else { &printError("Invalid number of arguments", __LINE__); }
+	return 0;
+}
+sub dirExists(){
+	if(@_ == 1){
+		my($sDir) = @_;
+		if(-e $sDir){
+			if(-d $sDir){
+				return 1;
+			}
+			else { &printError("Given path is not a directory", __LINE__); }
+		}
+		else { &printError("Given path does not exist", __LINE__); }
+	}
+	else { &printError("Invalid number of arguments", __LINE__); }
 	return 0;
 }
 sub changeDir(){
