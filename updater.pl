@@ -156,6 +156,19 @@ sub exeSysCmd(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
 }
+sub fileExists(){
+	if(@_ == 1){
+		my($sFile) = @_;
+		if(-e $sFile){
+			if(-f $sFile){
+				return 1;
+			}
+			else { &printError("Given path does not lead to a file", __LINE__); }
+		}
+		else { &printError("Given file does not exist", __LINE__); }
+	}
+	return 0;
+}
 sub changeDir(){
 	if(@_ == 1){
 		my($sDir) = @_;
