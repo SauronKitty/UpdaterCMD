@@ -189,16 +189,19 @@ sub forkImage(){
 		my $sPrimaryImage = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
 				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
 				    $hProfiles{$hSettings{'profile'}}{'PrimaryImage'};
-		if (-e $sPrimaryImage){
-			if(-d $sPrimaryImage){
-				my $sDestination  = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
-						    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
-						    $sImageSuffix;
-				&exeSysCmd("cp -Rl $sPrimaryImage $sDestination");
+		my $sDestination  = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
+				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
+				    $sImageSuffix;
+		unless(-e $sDestination){
+			if(-e $sPrimaryImage){
+				if(-d $sPrimaryImage){
+					&exeSysCmd("cp -Rl $sPrimaryImage $sDestination");
+				}
+				else { &printError("Given path is not a directory", __LINE__); }
 			}
-			else { &printError("Given path is not a directory", __LINE__); }
+			else { &printError("Given path does not exist", __LINE__); }
 		}
-		else { &printError("Given path does not exist", __LINE__); }
+		else { &printError("Image already exists", __LINE__); }
 	}
 	else { &printError("Invalid number or arguments", __LINE__); }
 }
