@@ -99,7 +99,7 @@ use Term::ANSIColor;
 );
 
 %hSettings = (
-	'version'	  => 0.82,
+	'version'	  => 0.90,
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'tar_verbose'	  => 1,
