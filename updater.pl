@@ -99,6 +99,7 @@ use Term::ANSIColor;
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'tar_verbose'	  => 1,
+	'safe_mode'	  => 1,
 	'console_prefix'  => 'UpdaterCMD',
 	'error_prefix'	  => 'Error',
 	'error_seperator' => ': ',
@@ -147,6 +148,20 @@ sub exeSysCmd(){
 	if(@_ == 1){
 		my($sCmd) = @_;
 		system("$sCmd\n");
+	}
+	else { &printError("Invalid number of arguments", __LINE__); }
+	return;
+}
+sub rmDir(){
+	if(@_ == 1){
+		my($sDir) = @_;
+		if(-e $sDir){
+			if(-d $sDir){
+				&exeSysCmd("rm -rf $sDir");
+			}
+			else { &printError("Given path is not a directory", __LINE__); }
+		}
+		else { &printError("Given path does not exist", __LINE__); }
 	}
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
