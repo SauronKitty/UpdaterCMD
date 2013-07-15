@@ -162,12 +162,15 @@ sub changeDir(){
 		if(-e $sDir){
 			if(-d $sDir){
 				chdir($sDir) || &printError("Unable to change directory", __LINE__);
+				return 1;
 			}
 			else { &printError("Given path is not a directory", __LINE__); }
 		}
 		else { &printError("Given path does not exist", __LINE__); }
 	}
 	else { &printError("Invalid number of arguments", __LINE__); }
+	&Exit();
+	return 0;
 }
 # removes a given directory
 sub rmDir(){
