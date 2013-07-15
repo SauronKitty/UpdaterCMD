@@ -167,6 +167,22 @@ sub rmDir(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
 }
+sub rm(){
+	if(@_ == 1){
+		my($sFile) = @_;
+		if(-e $sFile){
+			if(-f $sFile){
+				&exeSysCmd("rm $sFile");
+			}
+			else { &printError("Given path does not lead to a file", __LINE__); }
+		}
+		else { &printError("Given path does not exist", __LINE__); }
+	}
+	else { &printError("Invalid number or arguments", __LINE__); }
+	return;
+}
+sub forkImage(){
+}
 # lists contents of a compressed tar archive
 sub listContents(){
 	if(@_ == 1){
