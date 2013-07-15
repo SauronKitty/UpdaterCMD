@@ -152,6 +152,7 @@ sub exeSysCmd(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
 }
+# removes a given directory
 sub rmDir(){
 	if(@_ == 1){
 		my($sDir) = @_;
