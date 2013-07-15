@@ -12,6 +12,8 @@ exit_message		Message displayed when exiting.
 
 exeSysCmd()
 changeDir()
+fileExists()
+dirExists()
 rmDir()
 rmFile()
 forkImage()
