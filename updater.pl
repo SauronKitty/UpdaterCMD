@@ -186,6 +186,7 @@ sub rmFile(){
 	else { &printError("Invalid number or arguments", __LINE__); }
 	return;
 }
+
 ##
 # Image related functions
 ##
@@ -229,6 +230,7 @@ sub isPrimary(){
 sub getInstallations(){
 	return <$hProfiles{$hSettings{'profile'}}{'DirImage'}/$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}*>;
 }
+
 ###
 # Archive related functions
 ###
@@ -283,6 +285,7 @@ sub unpackFiles(){
 	else { &printError("Invalid number of arguments received", __LINE__); return; }
 	return
 }
+
 ##
 # Specialized functions
 ##
@@ -313,7 +316,6 @@ sub getDate(){
 	$mon += 1;     # Months start from 0, therefore we must add 1
 	return("$year.$mon.$mday");
 }
-
 
 ##############
 ## Commands ##
