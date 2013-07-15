@@ -27,6 +27,7 @@ getDate()
 isPrimary()
 
 DisplayHelp()
+SpawnImage()
 ListInstallations()
 Echo()
 GetConf()
