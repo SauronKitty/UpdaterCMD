@@ -326,7 +326,7 @@ sub getDate(){
 #
 ##
 sub DisplayHelp(){
-	print $hSettings{'sys_name'}." | v".$hSettings{'version'}."\n\n".colored([$hColors{'help_title'}], Commands).":\n";
+	print $hSettings{'sys_name'}." | v".$hSettings{'version'}."\n".colored([$hColors{'help_title'}], Commands).":\n";
 	foreach my $Key (keys %hFunctions){
 		printf("- %s: %s\n", colored([$hColors{'help_command'}], $Key), $hFunctions{$Key}{'Description'});
 	}
