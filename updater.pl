@@ -143,6 +143,10 @@ sub ProcessCommand(){
 ## Engine ##
 ############
 
+##
+# Bash related functions
+##
+
 # executes a shell command
 sub exeSysCmd(){
 	if(@_ == 1){
@@ -182,6 +186,10 @@ sub rmFile(){
 	else { &printError("Invalid number or arguments", __LINE__); }
 	return;
 }
+##
+# Image related functions
+##
+
 # Will generate a derivative installation from the primary one. Takes 1 argument; the suffix to the image that will be created
 sub forkImage(){
 	if(@_ == 1){
@@ -206,6 +214,25 @@ sub forkImage(){
 	else { &printError("Invalid number or arguments", __LINE__); }
 	return;
 }
+# checks whether or not an installation folder
+# is a primary installation image or not. Returns
+# 1 if it is, 0 otherwise
+sub isPrimary(){
+	if(@_ == 1){
+		my($sDirName) = @_;
+		if($sDirName eq $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'}){ return 1; } 
+		else{ return 0; }
+	}
+	else { &printError("Invalid number of arguments", __LINE__); }
+}
+# returns a list of all installation images
+sub getInstallations(){
+	return <$hProfiles{$hSettings{'profile'}}{'DirImage'}/$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}*>;
+}
+###
+# Archive related functions
+###
+
 # lists contents of a compressed tar archive
 sub listContents(){
 	if(@_ == 1){
@@ -256,6 +283,10 @@ sub unpackFiles(){
 	else { &printError("Invalid number of arguments received", __LINE__); return; }
 	return
 }
+##
+# Specialized functions
+##
+
 # returns the folder name from a given path
 sub getFolderName(){
 	if(@_ == 1){
@@ -265,10 +296,6 @@ sub getFolderName(){
 	}
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return
-}
-# returns a list of all installation images
-sub getInstallations(){
-	return <$hProfiles{$hSettings{'profile'}}{'DirImage'}/$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}*>;
 }
 # prints an error message to the user
 sub printError(){
@@ -286,17 +313,7 @@ sub getDate(){
 	$mon += 1;     # Months start from 0, therefore we must add 1
 	return("$year.$mon.$mday");
 }
-# checks whether or not an installation folder
-# is a primary installation image or not. Returns
-# 1 if it is, 0 otherwise
-sub isPrimary(){
-	if(@_ == 1){
-		my($sDirName) = @_;
-		if($sDirName eq $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'}){ return 1; } 
-		else{ return 0; }
-	}
-	else { &printError("Invalid number of arguments", __LINE__); }
-}
+
 
 ##############
 ## Commands ##
