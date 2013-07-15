@@ -187,14 +187,11 @@ sub dirExists(){
 sub changeDir(){
 	if(@_ == 1){
 		my($sDir) = @_;
-		if(-e $sDir){
-			if(-d $sDir){
-				chdir($sDir) || &printError("Unable to change directory", __LINE__);
-				return 1;
-			}
-			else { &printError("Given path is not a directory", __LINE__); }
+		if(&dirExists($sDir)){
+			chdir($sDir) || &printError("Unable to change directory", __LINE__);
+			return 1;
 		}
-		else { &printError("Given path does not exist", __LINE__); }
+		else { &printError("Unable to change directory", __LINE__); }
 	}
 	else { &printError("Invalid number of arguments", __LINE__); }
 	&Exit();
@@ -204,13 +201,10 @@ sub changeDir(){
 sub rmDir(){
 	if(@_ == 1){
 		my($sDir) = @_;
-		if(-e $sDir){
-			if(-d $sDir){
-				&exeSysCmd("rm -rf $sDir");
-			}
-			else { &printError("Given path is not a directory", __LINE__); }
+		if(&dirExists($sDir)){
+			&exeSysCmd("rm -rf $sDir");
 		}
-		else { &printError("Given path does not exist", __LINE__); }
+		else { &printError("Unable to remove directory", __LINE__); }
 	}
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
@@ -219,13 +213,10 @@ sub rmDir(){
 sub rmFile(){
 	if(@_ == 1){
 		my($sFile) = @_;
-		if(-e $sFile){
-			if(-f $sFile){
-				&exeSysCmd("rm $sFile");
-			}
-			else { &printError("Given path does not lead to a file", __LINE__); }
+		if(&fileExists($sFile)){
+			&exeSysCmd("rm $sFile");
 		}
-		else { &printError("Given path does not exist", __LINE__); }
+		else { &printError("Unable to remove file", __LINE__); }
 	}
 	else { &printError("Invalid number or arguments", __LINE__); }
 	return;
@@ -245,14 +236,11 @@ sub forkImage(){
 		my $sDestination  = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
 				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
 				    $sImageSuffix;
-		unless(-e $sDestination){
-			if(-e $sPrimaryImage){
-				if(-d $sPrimaryImage){
-					&exeSysCmd("cp -Rl $sPrimaryImage $sDestination");
-				}
-				else { &printError("Given path is not a directory", __LINE__); }
+		unless(&dirExists($sDestination)){
+			if(&dirExists($sPrimaryImage)){
+				&exeSysCmd("cp -Rl $sPrimaryImage $sDestination");
 			}
-			else { &printError("Given path does not exist", __LINE__); }
+			else { &printError("Unable to create an installation image", __LINE__); }
 		}
 		else { &printError("Image already exists", __LINE__); }
 	}
@@ -284,8 +272,8 @@ sub listContents(){
 	if(@_ == 1){
 		my($sArchiveName) = @_[0];
 
-		if(-e $sArchiveName){ &exeSysCmd("tar -ztvf $sArchiveName"); }
-		else { &printError("Archive [$sArchiveName] not found", __LINE__); }
+		if(&fileExists($sArchiveName)){ &exeSysCmd("tar -ztvf $sArchiveName"); }
+		else { &printError("An error occured while attempting to locate the archive", __LINE__); }
 	}
 	else { &printError("Archive name not specified", __LINE__); }
 	return;
@@ -314,9 +302,9 @@ sub unpackFiles(){
 		else { $sFlags = 'zxf'; }
 
 		my $sCwd = getcwd();
-		if(-e $sArchiveName){
+		if(&fileExists($sArchiveName)){
 			&exeSysCmd("cp $sArchiveName $sTargetDir");
-			if(-e "$sTargetDir/$sArchiveName"){
+			if(&fileExists("$sTargetDir/$sArchiveName")){
 				&changeDir($sTargetDir);
 				&exeSysCmd("tar $sFlags $sArchiveName");
 				&exeSysCmd("rm $sArchiveName");
@@ -324,7 +312,7 @@ sub unpackFiles(){
 			}
 			else{ &printError("An error occured while copying the archive", __LINE__); return; }
 		}
-		else{ &printError("Archive [$sArchiveName] not found", __LINE__); return; }
+		else{ &printError("An error occured while attempting to locate the archive", __LINE__); return; }
 	}
 	else { &printError("Invalid number of arguments received", __LINE__); return; }
 	return
