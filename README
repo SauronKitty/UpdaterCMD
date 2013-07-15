@@ -11,6 +11,7 @@ error_seperator		Seperator which sits between the error_prefix and the error mes
 exit_message		Message displayed when exiting.
 
 exeSysCmd()
+changeDir()
 rmDir()
 rmFile()
 forkImage()
