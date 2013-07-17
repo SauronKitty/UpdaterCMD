@@ -429,7 +429,7 @@ sub GenPayload(){
 	my $sCwd = getcwd();
 
 	&changeDir($hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'});
-	&packFiles("$sCwd/em_payload-".$hProfiles{$hSettings{'profile'}.'-'.&getDate(), join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}));
+	&packFiles("$sCwd/em_payload-".$hSettings{'profile'}.'-'.&getDate(), join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}));
 	&changeDir($sCwd);
 }
 # Applies a .tar.gz patch archive to all installation images
