@@ -39,11 +39,11 @@ use Term::ANSIColor;
 			'DirListConf'	 => [
 					     	'start*',
 						'tf/addons/sourcemod/configs/sourcebans/sourcebans.cfg',
-						'tf/cfg/Server.cfg'
+						'tf/cfg/server.cfg'
 					    ],
 			'DirListPayload' => [
 						'tf/addons',
-						'tf/cfg/Server.cfg',
+						'tf/cfg/server.cfg',
 						'tf/cfg/sourcemod',
 						'tf/em_motd.txt',
 						'tf/em_host.txt'
@@ -398,8 +398,9 @@ sub GenConf(){
 	foreach my $sDir (@sDirs){
 		&changeDir($sDir);
 
-		if(&isPrimary(&getFolderName($sDir))) { next; } # Skip primary installation image
-		&packFiles("$sCwd/$1", join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListConf'}}));
+		my $sFolder = &getFolderName($sDir);
+		if(&isPrimary($sFolder)) { next; } # Skip primary installation image
+		&packFiles("$sCwd/$sFolder", join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListConf'}}));
 	}
 	&changeDir($sCwd);
 	return;
