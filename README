@@ -10,21 +10,21 @@ error_prefix		Error message prefix. Value must be a string.
 error_seperator		Seperator which sits between the error_prefix and the error message. Value must be a string or character.
 exit_message		Message displayed when exiting.
 
-exeSysCmd()
-changeDir()
-fileExists()
-dirExists()
-rmDir()
-rmFile()
-forkImage()
-listContents()
-packFiles()
-unpackFiles()
-getFolderName()
-getInstallations()
-printError()
-getDate()
-isPrimary()
+exeSysCmd()		void exeSysCmd(string $_[0]) 			| $_[0] = System command to execute
+changeDir()		$bool changeDir(string $_[0]) 			| $_[0] = Directory to change to
+fileExists()		$bool fileExists(string $_[0])			| $_[0] = Path to file
+dirExists()		$bool dirExists(string $_[0])			| $_[0] = Path to folder
+rmDir()			void rmDir(string $_[0])			| $_[0]	= Path to folder
+rmFile()		void rmFile(string $_[0])			| $_[0]	= Path to file
+forkImage()		void forkImage(string $_[0])			| $_[0] = Image name suffix XX, example: l4d2_XX
+listContents()		void listContents(string $_[0])			| $_[0]	= Path to  archive
+packFiles()		void packFiles(string $_[0], string $_[1]) 	| $_[0] = Path to archive $_[1] = Space seperated string of files to add
+unpackFiles()		void unpackFiles(string $_[0], string $_[1])	| $_[0] = Path to archive $_[1] = Path to extract archive
+getFolderName()		$string getFolderName(string $_[0])		| $_[0] = Path to folder (Returns the folder at end of path)
+getInstallations()	@string getInstallations()			| (Returns list of installations based on $hProfiles{'xx'}{'ImagePrefix'}
+printError()		void printError(string $_[0], int $_[1])	| $_[0] = Error message $_[1] = __LINE__ number function was called at
+getDate()		$string getDate()				| (Returns date in pre-set format)
+isPrimary()		$bool isPrimary(string $_[0])			| Checks if given folder name matches %hProfile's primary
 
 DisplayHelp()
 SpawnImage()
