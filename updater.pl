@@ -13,7 +13,7 @@ use Term::ANSIColor;
 
 %hProfiles = (
 	'l4d2'	=> {
-			'DirImage'	 => '/home/evilmaniac/Documents/updater-test',
+			'DirImage'	 => '/home/evilmania/hlds/l4d2',
 			'ImagePrefix'	 => 'l4d2_',
 			'PrimaryImage'   => '00',
 			'DirLogs'	 => 'left4dead2/addons/sourcemod/logs',
@@ -34,7 +34,7 @@ use Term::ANSIColor;
 	'tf2'	=> {
 			'DirImage'	 => '/home/evilmania/hlds/tf2',
 			'ImagePrefix'	 => 'tf2_',
-			'PrimaryImage'   => '00',
+			'PrimaryImage'   => '0',
 			'DirLogs'	 => 'tf/addons/sourcemod/logs',
 			'DirListConf'	 => [
 					     	'start*',
@@ -429,7 +429,7 @@ sub GenPayload(){
 	my $sCwd = getcwd();
 
 	&changeDir($hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'});
-	&packFiles("$sCwd/em_payload-".&getDate(), join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}));
+	&packFiles("$sCwd/em_payload-".$hProfiles{$hSettings{'profile'}.'-'.&getDate(), join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}));
 	&changeDir($sCwd);
 }
 # Applies a .tar.gz patch archive to all installation images
