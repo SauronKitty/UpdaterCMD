@@ -459,9 +459,9 @@ sub SetUpdaterCvar(){
 		if (exists $hSettings{$sSetting}){
 			if($sSetting eq 'profile'){
 				if(!exists $hProfiles{$sNewValue}){ &printError("Profile does not exist", __LINE__); }
+				else { $hSettings{$sSetting} = $sNewValue; }
 			}
 			else { $hSettings{$sSetting} = $sNewValue; }
-			return;
 		}
 		else { &printError("Cvar not found", __LINE__); }
 	}
