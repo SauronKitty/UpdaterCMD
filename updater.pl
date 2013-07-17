@@ -151,7 +151,7 @@ sub ProcessCommand(){
 # Bash related functions
 ##
 
-# executes a shell command
+# Executes a shell command
 sub exeSysCmd(){
 	if(@_ == 1){
 		my($sCmd) = @_;
@@ -160,7 +160,7 @@ sub exeSysCmd(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
 }
-# checks if a given file exists
+# Checks if a given file exists
 sub fileExists(){
 	if(@_ == 1){
 		my($sFile) = @_;
@@ -175,7 +175,7 @@ sub fileExists(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return 0;
 }
-# checks if a given folder exists
+# Checks if a given folder exists
 sub dirExists(){
 	if(@_ == 1){
 		my($sDir) = @_;
@@ -190,7 +190,7 @@ sub dirExists(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return 0;
 }
-# changes pwd to the given dir
+# Changes pwd to the given dir
 sub changeDir(){
 	if(@_ == 1){
 		my($sDir) = @_;
@@ -204,7 +204,7 @@ sub changeDir(){
 	&Exit();
 	return 0;
 }
-# removes a given directory
+# Removes a given directory
 sub rmDir(){
 	if(@_ == 1){
 		my($sDir) = @_;
@@ -216,7 +216,7 @@ sub rmDir(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
 }
-# removes a given file
+# Removes a given file
 sub rmFile(){
 	if(@_ == 1){
 		my($sFile) = @_;
@@ -255,7 +255,7 @@ sub forkImage(){
 	return;
 }
 
-# checks whether or not an installation folder
+# Checks whether or not an installation folder
 # is a primary installation image or not. Returns
 # 1 if it is, 0 otherwise
 sub isPrimary(){
@@ -266,7 +266,7 @@ sub isPrimary(){
 	}
 	else { &printError("Invalid number of arguments", __LINE__); }
 }
-# returns a list of all installation images
+# Returns a list of all installation images
 sub getInstallations(){
 	return <$hProfiles{$hSettings{'profile'}}{'DirImage'}/$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}*>;
 }
@@ -275,7 +275,7 @@ sub getInstallations(){
 # Archive related functions
 ##
 
-# lists contents of a compressed tar archive
+# Lists contents of a compressed tar archive
 sub listContents(){
 	if(@_ == 1){
 		my($sArchiveName) = @_[0];
@@ -286,7 +286,7 @@ sub listContents(){
 	else { &printError("Archive name not specified", __LINE__); }
 	return;
 }
-# compresses given files into a tar archive
+# Compresses given files into a tar archive
 sub packFiles(){
 	if(@_ == 2){
 		my($sArchiveName, $sFiles) = @_;
@@ -300,7 +300,7 @@ sub packFiles(){
 	else{ &printError("Invalid number of arguments received", __LINE__); }
 	return;
 }
-# extracts given tar archive at required destination
+# Extracts given tar archive at required destination
 sub unpackFiles(){
 	if(@_ == 2){
 		my($sArchiveName, $sTargetDir) = @_;
@@ -331,7 +331,7 @@ sub unpackFiles(){
 # Specialized functions
 ##
 
-# returns the folder name from a given path
+# Returns the folder name from a given path
 sub getFolderName(){
 	if(@_ == 1){
 		my($sDirPath) = @_;
@@ -341,7 +341,7 @@ sub getFolderName(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return
 }
-# prints an error message to the user
+# Prints an error message to the user
 sub printError(){
 	if(@_ == 2){
 		my($sErrorMsg, $iLineNum) = @_;
@@ -349,7 +349,7 @@ sub printError(){
 	} else { &printError("Invalid number of arguments", __LINE__); }
 	return;
 }
-# returns date in the YYYY.MM.DD format
+# Returns date in the YYYY.MM.DD format
 sub getDate(){
 	my($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 	$year += 1900; # Year is returned as a value starting from 1900, therefore we must
@@ -474,7 +474,7 @@ sub SpawnImage(){
 		my @sDirs = &getInstallations();
 		foreach my $sDir (@sDirs){
 			unless(&isPrimary(&getFolderName($sDir))){ print($sDir."\n"); }
-			else { print(colored(['bold'], $sDir)."\n"); }
+			else { print(colored(['bold'], $sDir)."\n"); } # Primary image will be bold
 		}
 		print("Please insert a suffix for the image you wish to create: ");
 		my $sSuffix = <>;
