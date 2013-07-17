@@ -51,9 +51,9 @@ use Term::ANSIColor;
 		   }
 );
 
-###############
-## Variables ##
-###############
+#####################
+##    Variables    ##
+#####################
 
 %hFunctions = (
 	'help' 		=> {
@@ -119,9 +119,9 @@ use Term::ANSIColor;
 
 &CommandInput();
 
-#############
-## Console ##
-#############
+#####################
+##     Console     ##
+#####################
 
 sub CommandInput(){
 	print $hSettings{'console_prefix'}." -> ";
@@ -143,9 +143,9 @@ sub ProcessCommand(){
         &CommandInput();
 }
 
-############
-## Engine ##
-############
+#####################
+##      Engine     ##
+#####################
 
 ##
 # Bash related functions
@@ -254,6 +254,7 @@ sub forkImage(){
 	else { &printError("Invalid number or arguments", __LINE__); }
 	return;
 }
+
 # checks whether or not an installation folder
 # is a primary installation image or not. Returns
 # 1 if it is, 0 otherwise
@@ -357,14 +358,11 @@ sub getDate(){
 	return("$year.$mon.$mday");
 }
 
-##############
-## Commands ##
-##############
+#####################
+##     Commands    ##
+#####################
 
-##
 # Displays each command currently available
-#
-##
 sub DisplayHelp(){
 	print $hSettings{'sys_name'}." | v".$hSettings{'version'}."\n".colored([$hColors{'help_title'}], Commands).":\n";
 	foreach my $Key (keys %hFunctions){
@@ -372,10 +370,8 @@ sub DisplayHelp(){
 	}
 	return;
 }
-##
 # Lists all installations in the hProfiles.game.DirImage directory 
 # including primary installation and all forked installations
-##
 sub ListInstallations(){
 	my @sDirs = getInstallations();
 	foreach $sDir (@sDirs){
@@ -383,10 +379,8 @@ sub ListInstallations(){
 	}
 	return;
 }
-###
 # Displays all arguments passed onto a cmd. Used for debugging
 # purposes.
-###
 sub Echo(){
 	if(@_ > 0){
 		foreach my $Token (@_){ print $Token." "; }
@@ -395,10 +389,8 @@ sub Echo(){
 	else { &printError("Nothing to echo", __LINE__); }
 	return;
 }
-##
 # Generates configuration file images from the forked installation
 # images. Includes all files in the hProfiles.game.'DirListConf' array
-##
 sub GenConf(){
 	my $sCwd  = getcwd();
 	my @sDirs = &getInstallations();
@@ -412,11 +404,9 @@ sub GenConf(){
 	&changeDir($sCwd);
 	return;
 }
-###
 # Generated a back up of each server's log files
 # TODO chdir must change to absolute directory path
 # (where the logs are stored)
-###
 sub GenLogArchive(){
 	my $sCwd  = getcwd();
 	my @sDirs = &getInstallations();
@@ -431,11 +421,9 @@ sub GenLogArchive(){
 	&changeDir($sCwd);
 	return;
 }
-##
 # Generates a payload image from the primary installation
 # Includes all files in the hProfiles.game.DirListPayload 
 # array
-##
 sub GenPayload(){
 	my $sCwd = getcwd();
 
@@ -443,10 +431,7 @@ sub GenPayload(){
 	&packFiles("$sCwd/em_payload-".&getDate(), join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}));
 	&changeDir($sCwd);
 }
-##
 # Applies a .tar.gz patch archive to all installation images
-#
-##
 sub ApplyPatch(){
 	if(@_ == 1){
 		my($sArchiveName) = @_;
@@ -466,10 +451,7 @@ sub ApplyPatch(){
 	else { &printError("Archive name not specified", __LINE__); }
 	return;
 }
-##
 # Updates a value in the %hSettings hash.
-#
-##
 sub SetUpdaterCvar(){
 	if(@_ == 2){
 		my($sSetting, $sNewValue) = @_;
@@ -486,6 +468,7 @@ sub SetUpdaterCvar(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
 }
+# Creates an installation image
 sub SpawnImage(){
 	if(@_ == 0){
 		my @sDirs = &getInstallations();
@@ -501,10 +484,7 @@ sub SpawnImage(){
 	else { &forkImage($_[0]); }
 	return;
 }
-##
 # Terminates the application
-#
-##
 sub Exit(){
 	print(colored([$hColors{'exit_message'}], $hSettings{'exit_message'})."\n");
 	exit(0);
