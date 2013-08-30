@@ -11,7 +11,7 @@ use Term::ANSIColor;
 ## Default Profile ##
 #####################
 
-$sParentDirectory = '/home/emania';
+$sParentDirectory = '/home/emania'; # No forward slash on the end
 
 %hProfiles = (
 	'l4d2'	=> {
@@ -82,7 +82,7 @@ $sParentDirectory = '/home/emania';
 			   },
 	'scan' 		=> {
 				'Refrence'	=> \&ListInstallations,
-				'Description'	=> 'Scans if the currently set profile has any installation images'
+				'Description'	=> 'Displays installation images of currently set profile'
 			   },
 	'echo' 		=> {
 				'Refrence'	=> \&Echo,
@@ -106,15 +106,15 @@ $sParentDirectory = '/home/emania';
 			   },
 	'set',		=> {
 				'Refrence'	=> \&SetUpdaterCvar,
-				'Description'	=> 'Modifies a Cvar. Usage: set <cvar> <value>'
+				'Description'	=> 'Modifies a cvar. Usage: set <cvar> <value>'
 			   },
 	'spawnimage',	=> {
 				'Refrence'	=> \&SpawnImage,
-				'Description'	=> 'Spawns an additional installation image based on the initial one.'
+				'Description'	=> 'Spawns an additional installation image based on the initial one. Accept 1 optional argument; an image suffix.'
 			   },
         'exit' 		=> {
 				'Refrence'	=> \&Exit,
-				'Description'	=> 'Terminates the UpdaterCMD'
+				'Description'	=> 'Exits the UpdaterCMD'
 			   }
 );
 
