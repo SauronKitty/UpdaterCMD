@@ -11,9 +11,11 @@ use Term::ANSIColor;
 ## Default Profile ##
 #####################
 
+$sParentDirectory = '/home/emania';
+
 %hProfiles = (
 	'l4d2'	=> {
-			'DirImage'	 => '/home/evilmania/hlds/l4d2',
+			'DirImage'	 => $sParentDirectory.'/hlds/l4d2',
 			'ImagePrefix'	 => 'l4d2_',
 			'PrimaryImage'   => '00',
 			'DirLogs'	 => 'left4dead2/addons/sourcemod/logs',
@@ -31,10 +33,28 @@ use Term::ANSIColor;
 						'left4dead2/em_host.txt'
 					    ],
 		   },
+	'csgo'	=> {
+			'DirImage'	 => $sParentDirectory.'/hlds/csgo',
+			'ImagePrefix'	 => 'csgo_',
+			'PrimaryImage'   => '00',
+			'DirLogs'	 => 'csgo/addons/sourcemod/logs',
+			'DirListConf'	 => [
+					     	'start*',
+						'csgo/addons/sourcemod/configs/sourcebans/sourcebans.cfg',
+						'csgo/cfg/server.cfg'
+					    ],
+			'DirListPayload' => [
+						'csgo/addons',
+						'csgo/cfg/server.cfg',
+						'csgo/cfg/sourcemod',
+						'csgo/em_motd.txt',
+						'csgo/em_host.txt'
+					    ],
+		   },
 	'tf2'	=> {
-			'DirImage'	 => '/home/evilmania/hlds/tf2',
+			'DirImage'	 => $sParentDirectory.'/hlds/tf2',
 			'ImagePrefix'	 => 'tf2_',
-			'PrimaryImage'   => '0',
+			'PrimaryImage'   => '00',
 			'DirLogs'	 => 'tf/addons/sourcemod/logs',
 			'DirListConf'	 => [
 					     	'start*',
@@ -99,7 +119,7 @@ use Term::ANSIColor;
 );
 
 %hSettings = (
-	'version'	  => 0.90,
+	'version'	  => 0.91,
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'tar_verbose'	  => 1,
