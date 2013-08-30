@@ -11,7 +11,9 @@ use Term::ANSIColor;
 ## Default Profile ##
 #####################
 
-$sParentDirectory = '/home/emania/hlds/'; # No forward slash on the end
+$sParentDirectory = '/home/emania/hlds/'; # Forward slash expected at start and end.
+					  # This is where game installation files will
+					  # be found.
 
 %hProfiles = (
 	'l4d2'	=> {
