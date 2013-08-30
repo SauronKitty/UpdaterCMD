@@ -11,11 +11,11 @@ use Term::ANSIColor;
 ## Default Profile ##
 #####################
 
-$sParentDirectory = '/home/emania'; # No forward slash on the end
+$sParentDirectory = '/home/emania/hlds/'; # No forward slash on the end
 
 %hProfiles = (
 	'l4d2'	=> {
-			'DirImage'	 => $sParentDirectory.'/hlds/l4d2',
+			'DirImage'	 => $sParentDirectory.'l4d2',
 			'ImagePrefix'	 => 'l4d2_',
 			'PrimaryImage'   => '00',
 			'DirLogs'	 => 'left4dead2/addons/sourcemod/logs',
@@ -34,7 +34,7 @@ $sParentDirectory = '/home/emania'; # No forward slash on the end
 					    ],
 		   },
 	'csgo'	=> {
-			'DirImage'	 => $sParentDirectory.'/hlds/csgo',
+			'DirImage'	 => $sParentDirectory.'csgo',
 			'ImagePrefix'	 => 'csgo_',
 			'PrimaryImage'   => '00',
 			'DirLogs'	 => 'csgo/addons/sourcemod/logs',
@@ -52,7 +52,7 @@ $sParentDirectory = '/home/emania'; # No forward slash on the end
 					    ],
 		   },
 	'tf2'	=> {
-			'DirImage'	 => $sParentDirectory.'/hlds/tf2',
+			'DirImage'	 => $sParentDirectory.'tf2',
 			'ImagePrefix'	 => 'tf2_',
 			'PrimaryImage'   => '00',
 			'DirLogs'	 => 'tf/addons/sourcemod/logs',
