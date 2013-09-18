@@ -515,6 +515,7 @@ sub SpawnImage(){
 	else { &forkImage($_[0]); }
 	return;
 }
+# Passes commands to SteamCMD to update server file installations
 sub UpdateServerFiles(){
 	my $sCmdDir = $sSteamCmdDirectory."steamcmd.sh";
 
@@ -529,7 +530,6 @@ sub UpdateServerFiles(){
 	else { &printError("SteamCMD not found", __LINE__); }
 	return;
 }
-
 # Terminates the application
 sub Exit(){
 	print(colored([$hColors{'exit_message'}], $hSettings{'exit_message'})."\n");
