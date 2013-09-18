@@ -132,6 +132,7 @@ $sSteamCmdDirectory 	= '/home/emania/SteamCMD/';
 	'version'	  => 0.92,
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
+	'fork_verbose'	  => 0,
 	'tar_verbose'	  => 0,
 	'safe_mode'	  => 1,
 	'console_prefix'  => 'UpdaterCMD',
@@ -275,7 +276,8 @@ sub forkImage(){
 				    $sImageSuffix;
 		unless(-e $sDestination){ # &dirExists() prints an error, which we do not want in this case
 			if(&dirExists($sPrimaryImage)){
-				&exeSysCmd("cp -Rlv $sPrimaryImage $sDestination");
+				if($hSettings{'fork_verbose'}){ &exeSysCmd("cp -Rlv $sPrimaryImage $sDestination"); }
+				else { &exeSysCmd("cp -Rl $sPrimaryImage $sDestination"); }
 			}
 			else { &printError("Unable to create an installation image", __LINE__); }
 		}
@@ -519,7 +521,7 @@ sub SpawnImage(){
 sub UpdateServerFiles(){
 	my $sCmdDir = $sSteamCmdDirectory."steamcmd.sh";
 
-	if(-e $sCmdDir){
+	if(&fileExists($sCmdDir)){
 		my $sPrimaryImage = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
 				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
 				    $hProfiles{$hSettings{'profile'}}{'PrimaryImage'};
