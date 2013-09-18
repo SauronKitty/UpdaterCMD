@@ -516,13 +516,17 @@ sub SpawnImage(){
 	return;
 }
 sub UpdateServerFiles(){
-	my $sPrimaryImage = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
-			    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
-			    $hProfiles{$hSettings{'profile'}}{'PrimaryImage'};
-	my $sAppId	  = $hProfiles{$hSettings{'profile'}}{'AppId'};
-	my $sCmdDir	  = $sSteamCmdDirectory."steamcmd.sh";
+	my $sCmdDir = $sSteamCmdDirectory."steamcmd.sh";
 
-	&exeSysCmd("sh $sCmdDir +login anonymous +force_install_dir $sPrimaryImage +app_update $sAppId +quit");
+	if(-e $sCmdDir){
+		my $sPrimaryImage = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
+				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
+				    $hProfiles{$hSettings{'profile'}}{'PrimaryImage'};
+		my $sAppId	  = $hProfiles{$hSettings{'profile'}}{'AppId'};
+
+		&exeSysCmd("sh $sCmdDir +login anonymous +force_install_dir $sPrimaryImage +app_update $sAppId +quit");
+	}
+	else { &printError("SteamCMD not found", __LINE__); }
 	return;
 }
 
