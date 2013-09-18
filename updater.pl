@@ -129,7 +129,7 @@ $sSteamCmdDirectory 	= '/home/emania/SteamCMD/';
 );
 
 %hSettings = (
-	'version'	  => 0.91,
+	'version'	  => 0.92,
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'tar_verbose'	  => 0,
