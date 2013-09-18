@@ -3,6 +3,7 @@ Cvars:
 version			Sets the version number.
 profile			Sets the current profile to load. Value must be present in the %hProfiles hash.
 sys_name		Sets the application name.
+fork_verbose		Sets image forking verbosity. Value must be either 1 or 0.
 tar_verbose		Sets file compression verbosity. Value must be either 1 or 0.
 safe_mode
 console_prefix		Prefix to the console. Value must be a string.
@@ -30,9 +31,10 @@ DisplayHelp()
 SpawnImage()
 ListInstallations()
 Echo()
-GetConf()
+GenConf()
 GenLogArchive()
 GenPayload()
 ApplyPatch()
 SetUpdatecvar()
+UpdateServerFiles()
 Exit()
