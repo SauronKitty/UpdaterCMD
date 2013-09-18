@@ -11,12 +11,14 @@ use Term::ANSIColor;
 ## Default Profile ##
 #####################
 
-$sParentDirectory = '/home/emania/hlds/'; # Forward slash expected at start and end.
-					  # This is where game installation files will
-					  # be found.
+$sParentDirectory 	= '/home/emania/hlds/'; # Forward slash expected at start and end.
+					  	# This is where game installation files will
+					  	# be found.
+$sSteamCmdDirectory 	= '/home/emania/SteamCMD/';
 
 %hProfiles = (
 	'l4d2'	=> {
+			'AppId'		 => '222860',
 			'DirImage'	 => $sParentDirectory.'l4d2',
 			'ImagePrefix'	 => 'l4d2_',
 			'PrimaryImage'   => '00',
@@ -36,6 +38,7 @@ $sParentDirectory = '/home/emania/hlds/'; # Forward slash expected at start and 
 					    ],
 		   },
 	'csgo'	=> {
+			'AppId'		 => '740',
 			'DirImage'	 => $sParentDirectory.'csgo',
 			'ImagePrefix'	 => 'csgo_',
 			'PrimaryImage'   => '00',
@@ -54,6 +57,7 @@ $sParentDirectory = '/home/emania/hlds/'; # Forward slash expected at start and 
 					    ],
 		   },
 	'tf2'	=> {
+			'AppId'		 => '232250',
 			'DirImage'	 => $sParentDirectory.'tf2',
 			'ImagePrefix'	 => 'tf2_',
 			'PrimaryImage'   => '00',
@@ -113,6 +117,10 @@ $sParentDirectory = '/home/emania/hlds/'; # Forward slash expected at start and 
 	'spawnimage',	=> {
 				'Refrence'	=> \&SpawnImage,
 				'Description'	=> 'Spawns an additional installation image based on the initial one. Accept 1 optional argument; an image suffix.'
+			   },
+	'update'	=> {
+				'Refrence'	=> \&UpdateServerFiles,
+				'Description'	=> 'Will download the latest server files from valve into the primary image'
 			   },
         'exit' 		=> {
 				'Refrence'	=> \&Exit,
@@ -507,6 +515,17 @@ sub SpawnImage(){
 	else { &forkImage($_[0]); }
 	return;
 }
+sub UpdateServerFiles(){
+	my $sPrimaryImage = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
+			    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
+			    $hProfiles{$hSettings{'profile'}}{'PrimaryImage'};
+	my $sAppId	  = $hProfiles{$hSettings{'profile'}}{'AppId'};
+	my $sCmdDir	  = $sSteamCmdDirectory."steamcmd.sh";
+
+	&exeSysCmd("sh $sCmdDir +login anonymous +force_install_dir $sPrimaryImage +app_update $sAppId +quit");
+	return;
+}
+
 # Terminates the application
 sub Exit(){
 	print(colored([$hColors{'exit_message'}], $hSettings{'exit_message'})."\n");
