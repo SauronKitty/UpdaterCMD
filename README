@@ -21,6 +21,7 @@ forkImage()		void forkImage(string $_[0])			| $_[0] = Image name suffix XX, exam
 listContents()		void listContents(string $_[0])			| $_[0]	= Path to  archive
 packFiles()		void packFiles(string $_[0], string $_[1]) 	| $_[0] = Path to archive $_[1] = Space seperated string of files to add
 unpackFiles()		void unpackFiles(string $_[0], string $_[1])	| $_[0] = Path to archive $_[1] = Path to extract archive
+getPrimaryImagePath()	$string getPrimaryImagePath()			| Returns path to primary installation image for selected profile
 getFolderName()		$string getFolderName(string $_[0])		| $_[0] = Path to folder (Returns the folder at end of path)
 getInstallations()	@string getInstallations()			| (Returns list of installations based on $hProfiles{'xx'}{'ImagePrefix'}
 printError()		void printError(string $_[0], int $_[1])	| $_[0] = Error message $_[1] = __LINE__ number function was called at
