@@ -12,7 +12,7 @@ use Term::ANSIColor;
 #####################
 
 %hSettings = (
-	'version'	  => 0.93,
+	'version'	  => 0.94,
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'dir_primary'	  => '/home/emania/hlds/',
@@ -22,7 +22,7 @@ use Term::ANSIColor;
 	'console_prefix'  => 'UpdaterCMD',
 	'error_prefix'	  => 'Error',
 	'error_seperator' => ': ',
-	'exit_message'	  => 'Terminating...',
+	'exit_message'	  => 'Terminating...'
 );
 
 %hColors = (
@@ -143,6 +143,12 @@ use Term::ANSIColor;
 					    ],
 		   }
 );
+
+
+
+#####################
+##      Main       ##
+#####################
 
 &CommandInput();
 
