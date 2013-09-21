@@ -129,7 +129,7 @@ $sSteamCmdDirectory 	= '/home/emania/SteamCMD/';
 );
 
 %hSettings = (
-	'version'	  => 0.92,
+	'version'	  => 0.93,
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'fork_verbose'	  => 0,
@@ -268,9 +268,10 @@ sub rmFile(){
 sub forkImage(){
 	if(@_ == 1){
 		my($sImageSuffix) = @_;
-		my $sPrimaryImage = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
-				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
-				    $hProfiles{$hSettings{'profile'}}{'PrimaryImage'};
+#		my $sPrimaryImage = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
+#				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
+#				    $hProfiles{$hSettings{'profile'}}{'PrimaryImage'};
+		my $sPrimaryImage = &getPrimaryImagePath();
 		my $sDestination  = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
 				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
 				    $sImageSuffix;
@@ -363,6 +364,13 @@ sub unpackFiles(){
 # Specialized functions
 ##
 
+# Get path to the primary installation image
+sub getPrimaryImagePath(){
+	my $sPrimaryImage = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
+			    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
+			    $hProfiles{$hSettings{'profile'}}{'PrimaryImage'};
+	return($sPrimaryImage);
+}
 # Returns the folder name from a given path
 sub getFolderName(){
 	if(@_ == 1){
@@ -522,9 +530,7 @@ sub UpdateServerFiles(){
 	my $sCmdDir = $sSteamCmdDirectory."steamcmd.sh";
 
 	if(&fileExists($sCmdDir)){
-		my $sPrimaryImage = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
-				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
-				    $hProfiles{$hSettings{'profile'}}{'PrimaryImage'};
+		my $sPrimaryImage = &getPrimaryImagePath();
 		my $sAppId	  = $hProfiles{$hSettings{'profile'}}{'AppId'};
 
 		&exeSysCmd("sh $sCmdDir +login anonymous +force_install_dir $sPrimaryImage +app_update $sAppId +quit");
