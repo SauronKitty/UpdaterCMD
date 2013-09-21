@@ -8,78 +8,29 @@ use Cwd;
 use Term::ANSIColor;
 
 #####################
-## Default Profile ##
-#####################
-
-$sParentDirectory 	= '/home/emania/hlds/'; # Forward slash expected at start and end.
-					  	# This is where game installation files will
-					  	# be found.
-$sSteamCmdDirectory 	= '/home/emania/SteamCMD/';
-
-%hProfiles = (
-	'l4d2'	=> {
-			'AppId'		 => '222860',
-			'DirImage'	 => $sParentDirectory.'l4d2',
-			'ImagePrefix'	 => 'l4d2_',
-			'PrimaryImage'   => '00',
-			'DirLogs'	 => 'left4dead2/addons/sourcemod/logs',
-			'DirListConf'	 => [
-					     	'start*',
-						'left4dead2/addons/sourcemod/configs/sourcebans/sourcebans.cfg',
-						'left4dead2/cfg/Server.cfg'
-					    ],
-			'DirListPayload' => [
-						'left4dead2/addons',
-						'left4dead2/cfg/em_cfg',
-						'left4dead2/cfg/Server.cfg',
-						'left4dead2/cfg/sourcemod',
-						'left4dead2/em_motd.txt',
-						'left4dead2/em_host.txt'
-					    ],
-		   },
-	'csgo'	=> {
-			'AppId'		 => '740',
-			'DirImage'	 => $sParentDirectory.'csgo',
-			'ImagePrefix'	 => 'csgo_',
-			'PrimaryImage'   => '00',
-			'DirLogs'	 => 'csgo/addons/sourcemod/logs',
-			'DirListConf'	 => [
-					     	'start*',
-						'csgo/addons/sourcemod/configs/sourcebans/sourcebans.cfg',
-						'csgo/cfg/server.cfg'
-					    ],
-			'DirListPayload' => [
-						'csgo/addons',
-						'csgo/cfg/server.cfg',
-						'csgo/cfg/sourcemod',
-						'csgo/em_motd.txt',
-						'csgo/em_host.txt'
-					    ],
-		   },
-	'tf2'	=> {
-			'AppId'		 => '232250',
-			'DirImage'	 => $sParentDirectory.'tf2',
-			'ImagePrefix'	 => 'tf2_',
-			'PrimaryImage'   => '00',
-			'DirLogs'	 => 'tf/addons/sourcemod/logs',
-			'DirListConf'	 => [
-					     	'start*',
-						'tf/addons/sourcemod/configs/sourcebans/sourcebans.cfg',
-						'tf/cfg/server.cfg'
-					    ],
-			'DirListPayload' => [
-						'tf/addons',
-						'tf/cfg/server.cfg',
-						'tf/cfg/sourcemod',
-						'tf/em_motd.txt',
-						'tf/em_host.txt'
-					    ],
-		   }
-);
-
-#####################
 ##    Variables    ##
 #####################
+
+%hSettings = (
+	'version'	  => 0.93,
+	'profile'	  => 'l4d2',
+	'sys_name'	  => 'eM-UpdaterCMD',
+	'dir_primary'	  => '/home/emania/hlds/',
+	'dir_steamcmd'	  => '/home/emania/SteamCMD/',
+	'fork_verbose'	  => 0,
+	'tar_verbose'	  => 0,
+	'console_prefix'  => 'UpdaterCMD',
+	'error_prefix'	  => 'Error',
+	'error_seperator' => ': ',
+	'exit_message'	  => 'Terminating...',
+);
+
+%hColors = (
+	'error_prefix'	  => 'red',
+	'exit_message'	  => 'bold',
+	'help_command'	  => 'bold',
+	'help_title'	  => 'underline'
+);
 
 %hFunctions = (
 	'help' 		=> {
@@ -128,24 +79,69 @@ $sSteamCmdDirectory 	= '/home/emania/SteamCMD/';
 			   }
 );
 
-%hSettings = (
-	'version'	  => 0.93,
-	'profile'	  => 'l4d2',
-	'sys_name'	  => 'eM-UpdaterCMD',
-	'fork_verbose'	  => 0,
-	'tar_verbose'	  => 0,
-	'safe_mode'	  => 1,
-	'console_prefix'  => 'UpdaterCMD',
-	'error_prefix'	  => 'Error',
-	'error_seperator' => ': ',
-	'exit_message'	  => 'Terminating...',
-);
+#####################
+## Default Profile ##
+#####################
 
-%hColors = (
-	'error_prefix'	  => 'red',
-	'exit_message'	  => 'bold',
-	'help_command'	  => 'bold',
-	'help_title'	  => 'underline'
+%hProfiles = (
+	'l4d2'	=> {
+			'AppId'		 => '222860',
+			'DirImage'	 => $hSettings{'dir_primary'}.'l4d2',
+			'ImagePrefix'	 => 'l4d2_',
+			'PrimaryImage'   => '00',
+			'DirLogs'	 => 'left4dead2/addons/sourcemod/logs',
+			'DirListConf'	 => [
+					     	'start*',
+						'left4dead2/addons/sourcemod/configs/sourcebans/sourcebans.cfg',
+						'left4dead2/cfg/Server.cfg'
+					    ],
+			'DirListPayload' => [
+						'left4dead2/addons',
+						'left4dead2/cfg/em_cfg',
+						'left4dead2/cfg/Server.cfg',
+						'left4dead2/cfg/sourcemod',
+						'left4dead2/em_motd.txt',
+						'left4dead2/em_host.txt'
+					    ],
+		   },
+	'csgo'	=> {
+			'AppId'		 => '740',
+			'DirImage'	 => $hSettings{'dir_primary'}.'csgo',
+			'ImagePrefix'	 => 'csgo_',
+			'PrimaryImage'   => '00',
+			'DirLogs'	 => 'csgo/addons/sourcemod/logs',
+			'DirListConf'	 => [
+					     	'start*',
+						'csgo/addons/sourcemod/configs/sourcebans/sourcebans.cfg',
+						'csgo/cfg/server.cfg'
+					    ],
+			'DirListPayload' => [
+						'csgo/addons',
+						'csgo/cfg/server.cfg',
+						'csgo/cfg/sourcemod',
+						'csgo/em_motd.txt',
+						'csgo/em_host.txt'
+					    ],
+		   },
+	'tf2'	=> {
+			'AppId'		 => '232250',
+			'DirImage'	 => $sParentDirectory.'tf2',
+			'ImagePrefix'	 => 'tf2_',
+			'PrimaryImage'   => '00',
+			'DirLogs'	 => 'tf/addons/sourcemod/logs',
+			'DirListConf'	 => [
+					     	'start*',
+						'tf/addons/sourcemod/configs/sourcebans/sourcebans.cfg',
+						'tf/cfg/server.cfg'
+					    ],
+			'DirListPayload' => [
+						'tf/addons',
+						'tf/cfg/server.cfg',
+						'tf/cfg/sourcemod',
+						'tf/em_motd.txt',
+						'tf/em_host.txt'
+					    ],
+		   }
 );
 
 &CommandInput();
@@ -527,7 +523,7 @@ sub SpawnImage(){
 }
 # Passes commands to SteamCMD to update server file installations
 sub UpdateServerFiles(){
-	my $sCmdDir = $sSteamCmdDirectory."steamcmd.sh";
+	my $sCmdDir = $hSettings{'dir_steamcmd'}."steamcmd.sh";
 
 	if(&fileExists($sCmdDir)){
 		my $sPrimaryImage = &getPrimaryImagePath();
