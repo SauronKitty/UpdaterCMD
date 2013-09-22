@@ -125,7 +125,7 @@ use Term::ANSIColor;
 		   },
 	'tf2'	=> {
 			'AppId'		 => '232250',
-			'DirImage'	 => $sParentDirectory.'tf2',
+			'DirImage'	 => $hSettings{'dir_primary'}.'tf2',
 			'ImagePrefix'	 => 'tf2_',
 			'PrimaryImage'   => '00',
 			'DirLogs'	 => 'tf/addons/sourcemod/logs',
@@ -143,8 +143,6 @@ use Term::ANSIColor;
 					    ],
 		   }
 );
-
-
 
 #####################
 ##      Main       ##
