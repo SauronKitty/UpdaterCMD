@@ -493,7 +493,8 @@ sub ApplyPatch(){
 	else { &printError("Archive name not specified", __LINE__); }
 	return;
 }
-#
+# Patches a single image given an image suffix and an archive name
+# TODO: Must accept full image name as opposed to suffix only
 sub PatchImage(){
 	if(@_ == 2){
 		my($sImageSuffix, $sArchiveName) = @_;
