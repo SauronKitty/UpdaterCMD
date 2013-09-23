@@ -59,11 +59,11 @@ use Term::ANSIColor;
 			   },
 	'patchall'		=> {
 				'Refrence'	=> \&PatchAll,
-				'Description'	=> 'Applies a .tar.gz patch file to all detected installation images. patch <patchfile>.tar.gz'
+				'Description'	=> 'Applies a .tar.gz patch file to all detected installation images. Usage: patch <patchfile>.tar.gz'
 			   },
 	'patchimage'	=> {
 				'Refrence'	=> \&PatchImage,
-				'Description'	=> 'Apples a .tar.gz patch to a single installation image denoted by only a suffix. patchimage <patchfile>.tar.gz <suffix>'
+				'Description'	=> 'Apples a .tar.gz patch to a single installation image denoted by only a suffix. Usage: patchimage <patchfile>.tar.gz <suffix>'
 			   },
 	'set',		=> {
 				'Refrence'	=> \&SetUpdaterCvar,
@@ -75,7 +75,7 @@ use Term::ANSIColor;
 			   },
 	'update'	=> {
 				'Refrence'	=> \&UpdateServerFiles,
-				'Description'	=> 'Will download the latest server files from valve into the primary image'
+				'Description'	=> 'Downloads the latest patch files from the Valve servers and updates the primary isntallation image'
 			   },
         'exit' 		=> {
 				'Refrence'	=> \&Exit,
