@@ -473,6 +473,7 @@ sub GenPayload(){
 	&changeDir($sCwd);
 }
 # Applies a .tar.gz patch archive to all installation images
+# TODO: rename function to PatchAll()
 sub ApplyPatch(){
 	if(@_ == 1){
 		my($sArchiveName) = @_;
@@ -490,6 +491,24 @@ sub ApplyPatch(){
 		else { &printError("No installation images found", __LINE__); }
 	}
 	else { &printError("Archive name not specified", __LINE__); }
+	return;
+}
+#
+sub PatchImage(){
+	if(@_ == 2){
+		my($sImageSuffix, $sArchiveName) = @_;
+		my $sDestination  = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
+				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
+				    $sImageSuffix;
+		if(&fileExists($sArchiveName){
+			if(&dirExists($sDestination)){
+				&unpackFiles($sArchiveName, $sDestination);
+			}
+			else { &printError("Installation image not found", __LINE__); }
+		}
+		else { &printError("Patch file not found", __LINE__); }
+	}
+	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
 }
 # Updates a value in the %hSettings hash.
