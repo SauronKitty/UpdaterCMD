@@ -12,7 +12,7 @@ use Term::ANSIColor;
 #####################
 
 %hSettings = (
-	'version'	  => 0.94,
+	'version'	  => 0.95,
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'dir_primary'	  => '/home/emania/hlds/',
