@@ -59,7 +59,11 @@ use Term::ANSIColor;
 			   },
 	'patch'		=> {
 				'Refrence'	=> \&ApplyPatch,
-				'Description'	=> 'Applies a .tar.gz patch file to all detected installation images'
+				'Description'	=> 'Applies a .tar.gz patch file to all detected installation images. patch <patchfile>.tar.gz'
+			   },
+	'patchimage'	=> {
+				'Refrence'	=> \&PatchImage,
+				'Description'	=> 'Apples a .tar.gz patch to a single installation image denoted by only a suffix. patchimage <suffix> <patchfile>.tar.gz'
 			   },
 	'set',		=> {
 				'Refrence'	=> \&SetUpdaterCvar,
