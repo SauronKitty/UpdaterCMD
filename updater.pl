@@ -59,11 +59,11 @@ use Term::ANSIColor;
 			   },
 	'patchall'		=> {
 				'Refrence'	=> \&PatchAll,
-				'Description'	=> 'Applies a .tar.gz patch file to all detected installation images. Usage: patch <patchfile>.tar.gz'
+				'Description'	=> 'Applies a .tar.gz patch file to all detected installation images. Usage: patch <patchfile>'
 			   },
 	'patchimage'	=> {
 				'Refrence'	=> \&PatchImage,
-				'Description'	=> 'Apples a .tar.gz patch to a single installation image denoted by only a suffix. Usage: patchimage <patchfile>.tar.gz <suffix>'
+				'Description'	=> 'Apples a .tar.gz patch to a single installation image denoted by only a suffix. Usage: patchimage <patchfile> <suffix>'
 			   },
 	'set',		=> {
 				'Refrence'	=> \&SetUpdaterCvar,
