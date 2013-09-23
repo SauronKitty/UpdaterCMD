@@ -501,7 +501,7 @@ sub ApplyPatch(){
 # TODO: Must accept full image name as opposed to suffix only
 sub PatchImage(){
 	if(@_ == 2){
-		my($sImageSuffix, $sArchiveName) = @_;
+		my($sArchiveName, $sImageSuffix) = @_;
 		my $sDestination  = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
 				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
 				    $sImageSuffix;
