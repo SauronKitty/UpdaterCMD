@@ -58,7 +58,7 @@ use Term::ANSIColor;
 				'Description'	=> 'Generates an archive, storing all log files in an archive'
 			   },
 	'patchall'		=> {
-				'Refrence'	=> \&ApplyPatch,
+				'Refrence'	=> \&PatchAll,
 				'Description'	=> 'Applies a .tar.gz patch file to all detected installation images. patch <patchfile>.tar.gz'
 			   },
 	'patchimage'	=> {
@@ -477,8 +477,7 @@ sub GenPayload(){
 	&changeDir($sCwd);
 }
 # Applies a .tar.gz patch archive to all installation images
-# TODO: rename function to PatchAll()
-sub ApplyPatch(){
+sub PatchAll(){
 	if(@_ == 1){
 		my($sArchiveName) = @_;
 		my @sDirs = &getInstallations();
