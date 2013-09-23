@@ -57,13 +57,13 @@ use Term::ANSIColor;
 				'Refrence'	=> \&GenLogArchive,
 				'Description'	=> 'Generates an archive, storing all log files in an archive'
 			   },
-	'patch'		=> {
+	'patchall'		=> {
 				'Refrence'	=> \&ApplyPatch,
 				'Description'	=> 'Applies a .tar.gz patch file to all detected installation images. patch <patchfile>.tar.gz'
 			   },
 	'patchimage'	=> {
 				'Refrence'	=> \&PatchImage,
-				'Description'	=> 'Apples a .tar.gz patch to a single installation image denoted by only a suffix. patchimage <suffix> <patchfile>.tar.gz'
+				'Description'	=> 'Apples a .tar.gz patch to a single installation image denoted by only a suffix. patchimage <patchfile>.tar.gz <suffix>'
 			   },
 	'set',		=> {
 				'Refrence'	=> \&SetUpdaterCvar,
