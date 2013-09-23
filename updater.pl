@@ -505,7 +505,7 @@ sub PatchImage(){
 		my $sDestination  = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
 				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
 				    $sImageSuffix;
-		if(&fileExists($sArchiveName){
+		if(&fileExists($sArchiveName)){
 			if(&dirExists($sDestination)){
 				&unpackFiles($sArchiveName, $sDestination);
 			}
