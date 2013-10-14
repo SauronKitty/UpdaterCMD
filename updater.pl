@@ -594,14 +594,14 @@ sub RespawnImage(){
 		if(&dirExists($sDestination)){
 			# Backup configuration image
 			# Backup logs
-			&printStatus("Removing current image");
 			rmtree($sDestination);
-			&printStatus("Spawning new image");
 			&SpawnImage($sImageSuffix);
-			&printStatus("Patching image");
-			&PatchImage(&getFolderName($sDestination).".tar.gz", $sImageSuffix);
+			if(-e &getFolderName($sDestination).".tar.gz"){
+				&PatchImage(&getFolderName($sDestination).".tar.gz", $sImageSuffix);
+			}
+			else { &printError("Patch image not found. Proceeding without configuration patch", __LINE__); }
 		}
-		else { &printError("Respawn failed", __LINE__); return; }
+		else { &printError("Respawn failed. Image does not exist", __LINE__); return; }
 	}
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return;
