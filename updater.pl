@@ -5,6 +5,7 @@
 # http://www.evilmania.net
 
 use Cwd;
+use File::Path;
 use Term::ANSIColor;
 
 #####################
@@ -12,7 +13,7 @@ use Term::ANSIColor;
 #####################
 
 %hSettings = (
-	'version'	  => 0.95,
+	'version'	  => 0.96b,
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'dir_primary'	  => '/home/emania/hlds/',
@@ -72,6 +73,10 @@ use Term::ANSIColor;
 	'spawnimage',	=> {
 				'Refrence'	=> \&SpawnImage,
 				'Description'	=> 'Spawns an additional installation image based on the initial one. Accept 1 optional argument; an image suffix.'
+			   },
+	'respawnimage'	=> {
+				'Refrence'	=> \&RespawnImage,
+				'Description'	=> 'BETA'
 			   },
 	'update'	=> {
 				'Refrence'	=> \&UpdateServerFiles,
@@ -385,6 +390,14 @@ sub getFolderName(){
 	else { &printError("Invalid number of arguments", __LINE__); }
 	return
 }
+# Prints a status message to the user
+sub printStatus(){
+	if(@_ == 1){
+		my($sStatusMsg) = @_;
+		print($sStatusMsg."\n");
+	} else { &printError("Invalid number of arguments", __LINE__); }
+	return;
+}
 # Prints an error message to the user
 sub printError(){
 	if(@_ == 2){
@@ -565,4 +578,31 @@ sub UpdateServerFiles(){
 sub Exit(){
 	print(colored([$hColors{'exit_message'}], $hSettings{'exit_message'})."\n");
 	exit(0);
+}
+
+#####################
+##   HL Commands   ##
+#####################
+
+# BETA
+sub RespawnImage(){
+	if(@_ == 1){
+		my($sImageSuffix) = @_;
+		my $sDestination  = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
+				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
+				    $sImageSuffix;
+		if(&dirExists($sDestination)){
+			# Backup configuration image
+			# Backup logs
+			&printStatus("Removing current image");
+			rmtree($sDestination);
+			&printStatus("Spawning new image");
+			&SpawnImage($sImageSuffix);
+			&printStatus("Patching image");
+			&PatchImage(&getFolderName($sDestination).".tar.gz", $sImageSuffix);
+		}
+		else { &printError("Respawn failed", __LINE__); return; }
+	}
+	else { &printError("Invalid number of arguments", __LINE__); }
+	return;
 }
