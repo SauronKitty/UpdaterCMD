@@ -13,11 +13,12 @@ use Term::ANSIColor;
 #####################
 
 %hSettings = (
-	'version'	  => '0.961',
+	'version'	  => '0.97',
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'dir_primary'	  => '/home/emania/hlds/',
 	'dir_steamcmd'	  => '/home/emania/SteamCMD/',
+	'exe_steamcmd'	  => 'steamcmd.sh',
 	'fork_verbose'	  => 0,
 	'tar_verbose'	  => 0,
 	'auto_patch'	  => 1,
@@ -562,23 +563,36 @@ sub SpawnImage(){
 	else { &forkImage($_[0]); }
 	return;
 }
-# Passes commands to SteamCMD to update server file installations
-sub UpdateServerFiles(){
-	my $sCmdDir = $hSettings{'dir_steamcmd'}."steamcmd.sh";
-
-	if(&fileExists($sCmdDir)){
-		my $sPrimaryImage = &getPrimaryImagePath();
-		my $sAppId	  = $hProfiles{$hSettings{'profile'}}{'AppId'};
-
-		&exeSysCmd("sh $sCmdDir +login anonymous +force_install_dir $sPrimaryImage +app_update $sAppId +quit");
-	}
-	else { &printError("SteamCMD not found", __LINE__); }
-	return;
-}
 # Terminates the application
 sub Exit(){
 	print(colored([$hColors{'exit_message'}], $hSettings{'exit_message'})."\n");
 	exit(0);
+}
+
+#####################
+## SteamCMD Wrap   ##
+#####################
+
+# Returns location of the SteamCMD.sh if SteamCMD is found. Otherwise returns false.
+sub checkSteamCmd(){
+	my $sCmdDir = $hSettings{'dir_steamcmd'}.$hSettings{'exe_steamcmd'};
+
+	if(&fileExists($sCmdDir)){
+		return $sCmdDir;
+	}
+	else { &printError("SteamCMD not found", __LINE__); }
+	return 0;
+}
+
+# Passes commands to SteamCMD to update server file installations
+sub UpdateServerFiles(){
+	my $sCmdDir = &checkSteamCmd() or do{ &printError("Unable to update server files", __LINE__); return; };
+
+	my $sPrimaryImage = &getPrimaryImagePath();
+	my $sAppId	  = $hProfiles{$hSettings{'profile'}}{'AppId'};
+	&exeSysCmd("sh $sCmdDir +login anonymous +force_install_dir $sPrimaryImage +app_update $sAppId +quit");
+
+	return;
 }
 
 #####################
