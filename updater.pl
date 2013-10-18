@@ -601,7 +601,7 @@ sub RespawnImage(){
 				if($hSettings{'auto_patch'} != 1){
 					my $sPatchImage = &getFolderName($sDestination).".tar.gz";
 
-					print("Patch image ($sPatchImage) found.\n");
+					print("Patch image ($sPatchImage) found. Apply patch? (Y/N)\n");
 					my $sUsrReply = <>;
 					unless($sUsrReply =~ /^[Y]?$/i){
 						&printError("Patching aborted", __LINE__);
