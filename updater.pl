@@ -20,6 +20,7 @@ use Term::ANSIColor;
 	'dir_steamcmd'	  => '/home/emania/SteamCMD/',
 	'fork_verbose'	  => 0,
 	'tar_verbose'	  => 0,
+	'auto_patch'	  => 1,
 	'console_prefix'  => 'UpdaterCMD',
 	'error_prefix'	  => 'Error',
 	'error_seperator' => ': ',
