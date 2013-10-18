@@ -77,7 +77,7 @@ use Term::ANSIColor;
 			   },
 	'respawnimage'	=> {
 				'Refrence'	=> \&RespawnImage,
-				'Description'	=> 'Recreates an image from the primary installation directory and attempts to patch it with a configuration archive'
+				'Description'	=> 'Recreates an image from the primary installation directory and attempts to patch it with a configuration archive. Requires an image suffix.'
 			   },
 	'update'	=> {
 				'Refrence'	=> \&UpdateServerFiles,
