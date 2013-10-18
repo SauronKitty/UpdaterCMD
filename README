@@ -3,21 +3,24 @@ Cvars:
 version			Sets the version number.
 profile			Sets the current profile to load. Value must be present in the %hProfiles hash.
 sys_name		Sets the application name.
+dir_primary
+dir_steamcmd
 fork_verbose		Sets image forking verbosity. Value must be either 1 or 0.
 tar_verbose		Sets file compression verbosity. Value must be either 1 or 0.
-safe_mode
+auto_patch
 console_prefix		Prefix to the console. Value must be a string.
 error_prefix		Error message prefix. Value must be a string.
 error_seperator		Seperator which sits between the error_prefix and the error message. Value must be a string or character.
 exit_message		Message displayed when exiting.
 
 exeSysCmd()		void exeSysCmd(string $_[0]) 			| $_[0] = System command to execute
-changeDir()		$bool changeDir(string $_[0]) 			| $_[0] = Directory to change to
 fileExists()		$bool fileExists(string $_[0])			| $_[0] = Path to file
 dirExists()		$bool dirExists(string $_[0])			| $_[0] = Path to folder
+changeDir()		$bool changeDir(string $_[0]) 			| $_[0] = Directory to change to
 rmDir()			void rmDir(string $_[0])			| $_[0]	= Path to folder
 rmFile()		void rmFile(string $_[0])			| $_[0]	= Path to file
 forkImage()		void forkImage(string $_[0])			| $_[0] = Image name suffix XX, example: l4d2_XX
+isPrimary()
 listContents()		void listContents(string $_[0])			| $_[0]	= Path to  archive
 packFiles()		void packFiles(string $_[0], string $_[1]) 	| $_[0] = Path to archive $_[1] = Space seperated string of files to add
 unpackFiles()		void unpackFiles(string $_[0], string $_[1])	| $_[0] = Path to archive $_[1] = Path to extract archive
@@ -25,6 +28,7 @@ getPrimaryImagePath()	$string getPrimaryImagePath()			| Returns path to primary 
 getFolderName()		$string getFolderName(string $_[0])		| $_[0] = Path to folder (Returns the folder at end of path)
 getInstallations()	@string getInstallations()			| (Returns list of installations based on $hProfiles{'xx'}{'ImagePrefix'}
 printError()		void printError(string $_[0], int $_[1])	| $_[0] = Error message $_[1] = __LINE__ number function was called at
+printStatus()
 getDate()		$string getDate()				| (Returns date in pre-set format)
 isPrimary()		$bool isPrimary(string $_[0])			| Checks if given folder name matches %hProfile's primary
 
@@ -40,3 +44,5 @@ PatchImage()
 SetUpdatecvar()
 UpdateServerFiles()
 Exit()
+
+RespawnImage()
