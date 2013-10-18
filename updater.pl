@@ -581,7 +581,6 @@ sub checkSteamCmd(){
 		return $sCmdDir;
 	}
 	else { &printError("SteamCMD not found", __LINE__); }
-
 	return 0;
 }
 
