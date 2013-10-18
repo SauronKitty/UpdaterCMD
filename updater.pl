@@ -585,7 +585,7 @@ sub Exit(){
 ##   HL Commands   ##
 #####################
 
-# BETA
+# Respawns an image. Requires an image suffix to be passed as a parameter
 sub RespawnImage(){
 	if(@_ == 1){
 		my($sImageSuffix) = @_;
