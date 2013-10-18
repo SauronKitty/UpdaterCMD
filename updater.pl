@@ -597,10 +597,10 @@ sub RespawnImage(){
 			# Backup logs
 			rmtree($sDestination);
 			&SpawnImage($sImageSuffix);
-			if(-e &getFolderName($sDestination).".tar.gz"){
-				if($hSettings{'auto_patch'} != 1){
-					my $sPatchImage = &getFolderName($sDestination).".tar.gz";
 
+			my $sPatchImage = &getFolderName($sDestination).".tar.gz";
+			if(-e $sPatchImage){
+				if($hSettings{'auto_patch'} != 1){
 					print("Patch image ($sPatchImage) found. Apply patch? (Y/N)\n");
 					my $sUsrReply = <>;
 					unless($sUsrReply =~ /^[Y]?$/i){
@@ -608,8 +608,8 @@ sub RespawnImage(){
 						return;
 					}
 				}
-				&PatchImage(&getFolderName($sDestination).".tar.gz", $sImageSuffix);
-				# Patching complete
+				&PatchImage($sPatchImage, $sImageSuffix);
+				&printStatus("Patch applied");
 			}
 			else { &printError("Patch image not found. Proceeding without configuration patch", __LINE__); }
 		}
