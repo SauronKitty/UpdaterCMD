@@ -570,34 +570,6 @@ sub Exit(){
 }
 
 #####################
-## SteamCMD Wrap   ##
-#####################
-
-# Returns location of the SteamCMD.sh if SteamCMD is found. Otherwise returns false.
-sub checkSteamCmd(){
-	my $sCmdDir = $hSettings{'dir_steamcmd'}.$hSettings{'exe_steamcmd'};
-
-	if(&fileExists($sCmdDir)){
-		return $sCmdDir;
-	}
-	else { &printError("SteamCMD not found", __LINE__); }
-	return 0;
-}
-
-# Passes commands to SteamCMD to update server file installations
-sub UpdateServerFiles(){
-	my $sCmdDir = &checkSteamCmd() or do{ &printError("Unable to update server files", __LINE__); return; };
-
-	my $sPrimaryImage = &getPrimaryImagePath();
-	if(&dirExists($sPrimaryImage){
-		my $sAppId	  = $hProfiles{$hSettings{'profile'}}{'AppId'};
-		&exeSysCmd("sh $sCmdDir +login anonymous +force_install_dir $sPrimaryImage +app_update $sAppId +quit");
-	}
-	else { &printError("Primary image not found. File update aborted"); }
-	return;
-}
-
-#####################
 ##   HL Commands   ##
 #####################
 
@@ -632,5 +604,41 @@ sub RespawnImage(){
 		else { &printError("Respawn failed. Image does not exist", __LINE__); return; }
 	}
 	else { &printError("Invalid number of arguments", __LINE__); }
+	return;
+}
+
+#####################
+## SteamCMD Wrap   ##
+#####################
+
+##
+# Engine based functions
+##
+
+# Returns location of the SteamCMD.sh if SteamCMD is found. Otherwise returns false.
+sub checkSteamCmd(){
+	my $sCmdDir = $hSettings{'dir_steamcmd'}.$hSettings{'exe_steamcmd'};
+
+	if(&fileExists($sCmdDir)){
+		return $sCmdDir;
+	}
+	else { &printError("SteamCMD not found", __LINE__); }
+	return 0;
+}
+
+##
+# Wrapper functions
+##
+
+# Passes commands to SteamCMD to update server file installations
+sub UpdateServerFiles(){
+	my $sCmdDir = &checkSteamCmd() or do{ &printError("Unable to update server files", __LINE__); return; };
+
+	my $sPrimaryImage = &getPrimaryImagePath();
+	if(&dirExists($sPrimaryImage){
+		my $sAppId	  = $hProfiles{$hSettings{'profile'}}{'AppId'};
+		&exeSysCmd("sh $sCmdDir +login anonymous +force_install_dir $sPrimaryImage +app_update $sAppId +quit");
+	}
+	else { &printError("Primary image not found. File update aborted"); }
 	return;
 }
