@@ -13,7 +13,7 @@ use Term::ANSIColor;
 #####################
 
 %hSettings = (
-	'version'	  => 0.96b,
+	'version'	  => '0.96b',
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'dir_primary'	  => '/home/emania/hlds/',
@@ -598,7 +598,18 @@ sub RespawnImage(){
 			rmtree($sDestination);
 			&SpawnImage($sImageSuffix);
 			if(-e &getFolderName($sDestination).".tar.gz"){
+				if($hSettings{'auto_patch'} != 1){
+					my $sPatchImage = &getFolderName($sDestination).".tar.gz";
+
+					print("Patch image ($sPatchImage) found.\n");
+					my $sUsrReply = <>;
+					unless($sUsrReply =~ /^[Y]?$/i){
+						&printError("Patching aborted", __LINE__);
+						return;
+					}
+				}
 				&PatchImage(&getFolderName($sDestination).".tar.gz", $sImageSuffix);
+				# Patching complete
 			}
 			else { &printError("Patch image not found. Proceeding without configuration patch", __LINE__); }
 		}
