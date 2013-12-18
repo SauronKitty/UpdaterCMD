@@ -169,7 +169,7 @@ use Term::ANSIColor;
 						'config/ServerAdmin.json',
 						'config/MapCycle.json',
 						'config/ConsistencyConfig.json',
-						'BannedPlayers.json'
+						'config/BannedPlayers.json'
 					    ],
 			'DirListPayload' => [
 					    ],
@@ -479,7 +479,9 @@ sub GenConf(){
 		&changeDir($sDir);
 
 		my $sFolder = &getFolderName($sDir);
-		if(&isPrimary($sFolder)) { next; } # Skip primary installation image
+		if($hProfiles{$hSettings{'profile'}}{'IgnorePrimary'}){
+			if(&isPrimary($sFolder)) { next; } # Skip primary installation image
+		}
 		&packFiles("$sCwd/$sFolder", join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListConf'}}));
 	}
 	&changeDir($sCwd);
