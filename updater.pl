@@ -101,6 +101,8 @@ use Term::ANSIColor;
 			'ImagePrefix'	 => 'l4d2_',
 			'PrimaryImage'   => '00',
 			'IgnorePrimary'	 => '1', # Ignore primary image when backing up server configuration
+						 # should be 0 if primary installation is used to run server
+						 # and the server is not run through a hard linked image
 			'DirLogs'	 => 'left4dead2/addons/sourcemod/logs',
 			'DirListConf'	 => [
 					     	'start*',
