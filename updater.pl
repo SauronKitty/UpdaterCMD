@@ -100,6 +100,7 @@ use Term::ANSIColor;
 			'DirImage'	 => $hSettings{'dir_primary'}.'l4d2',
 			'ImagePrefix'	 => 'l4d2_',
 			'PrimaryImage'   => '00',
+			'IgnorePrimary'	 => '1', # Ignore primary image when backing up server configuration
 			'DirLogs'	 => 'left4dead2/addons/sourcemod/logs',
 			'DirListConf'	 => [
 					     	'start*',
@@ -120,6 +121,7 @@ use Term::ANSIColor;
 			'DirImage'	 => $hSettings{'dir_primary'}.'csgo',
 			'ImagePrefix'	 => 'csgo_',
 			'PrimaryImage'   => '00',
+			'IgnorePrimary'	 => '1',
 			'DirLogs'	 => 'csgo/addons/sourcemod/logs',
 			'DirListConf'	 => [
 					     	'start*',
@@ -139,6 +141,7 @@ use Term::ANSIColor;
 			'DirImage'	 => $hSettings{'dir_primary'}.'tf2',
 			'ImagePrefix'	 => 'tf2_',
 			'PrimaryImage'   => '00',
+			'IgnorePrimary'	 => '1',
 			'DirLogs'	 => 'tf/addons/sourcemod/logs',
 			'DirListConf'	 => [
 					     	'start*',
@@ -158,6 +161,7 @@ use Term::ANSIColor;
 			'DirImage'	 => $hSettings{'dir_primary'}.'ns2',
 			'ImagePrefix'	 => 'ns2_',
 			'PrimaryImage'   => '00',
+			'IgnorePrimary'	 => '0',
 			'DirLogs'	 => 'logs',
 			'DirListConf'	 => [
 						'start*',
@@ -491,7 +495,9 @@ sub GenLogArchive(){
 	foreach my $sDir (@sDirs){
 		&changeDir($sDir);
 
-		if(&isPrimary(&getFolderName($sDir))) { next; } # Skip primary installation image
+		if($hProfiles{$hSettings{'profile'}}{'IgnorePrimary'}){
+			if(&isPrimary(&getFolderName($sDir))) { next; } # Skip primary installation image
+		}
 		&exeSysCmd("mkdir -p $sCwd/logs/$1");
 		&packFiles("$Cwd/logs/$1/log-$1-".&getDate(), "-C ".$hProfiles{$hSettings{'profile'}}{'DirLogs'});
 	}
@@ -505,9 +511,10 @@ sub GenPayload(){
 	my $sCwd = getcwd();
 
 	&changeDir($hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'});
-	unless(scalar @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}){
+	if(scalar @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}){
 		&packFiles("$sCwd/em_payload-".$hSettings{'profile'}.'-'.&getDate(), join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}));
 	}
+	else { &printError("DirListPayload is empty. Please check profile", __LINE__); }
 	&changeDir($sCwd);
 }
 # Applies a .tar.gz patch archive to all installation images
