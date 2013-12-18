@@ -152,7 +152,7 @@ use Term::ANSIColor;
 						'tf/em_motd.txt',
 						'tf/em_host.txt'
 					    ],
-		   }
+		   },
 	'ns2'	=> { # Natural Selection 2
 			'AppId'		 => '4940',
 			'DirImage'	 => $hSettings{'dir_primary'}.'ns2',
@@ -654,8 +654,8 @@ sub UpdateServerFiles(){
 	my $sCmdDir = &checkSteamCmd() or do{ &printError("Unable to update server files", __LINE__); return; };
 
 	my $sPrimaryImage = &getPrimaryImagePath();
-	if(&dirExists($sPrimaryImage){
-		my $sAppId	  = $hProfiles{$hSettings{'profile'}}{'AppId'};
+	if(&dirExists($sPrimaryImage)){
+		my $sAppId = $hProfiles{$hSettings{'profile'}}{'AppId'};
 		&exeSysCmd("sh $sCmdDir +login anonymous +force_install_dir $sPrimaryImage +app_update $sAppId +quit");
 	}
 	else { &printError("Primary image not found. File update aborted"); }
