@@ -189,7 +189,7 @@ use Term::ANSIColor;
 #####################
 
 sub CommandInput(){
-	print $hSettings{'console_prefix'}." -> ";
+	print '('.$hSettings{'profile'}.') '.$hSettings{'console_prefix'}." -> ";
 	my $usrCommand = <>;
 	$usrCommand =~ s/[\$#@~!&*;,?^\|`\\\n]+//g; # Filter un-wanted symbols to avoid
 						    # accidental command injection
