@@ -95,7 +95,7 @@ use Term::ANSIColor;
 #####################
 
 %hProfiles = (
-	'l4d2'	=> {
+	'l4d2'	=> { # Left 4 Dead 2
 			'AppId'		 => '222860',
 			'DirImage'	 => $hSettings{'dir_primary'}.'l4d2',
 			'ImagePrefix'	 => 'l4d2_',
@@ -115,7 +115,7 @@ use Term::ANSIColor;
 						'left4dead2/em_host.txt'
 					    ],
 		   },
-	'csgo'	=> {
+	'csgo'	=> { # Counter-Strike: Global Offensive
 			'AppId'		 => '740',
 			'DirImage'	 => $hSettings{'dir_primary'}.'csgo',
 			'ImagePrefix'	 => 'csgo_',
@@ -134,7 +134,7 @@ use Term::ANSIColor;
 						'csgo/em_host.txt'
 					    ],
 		   },
-	'tf2'	=> {
+	'tf2'	=> { # Team Fortress 2
 			'AppId'		 => '232250',
 			'DirImage'	 => $hSettings{'dir_primary'}.'tf2',
 			'ImagePrefix'	 => 'tf2_',
@@ -151,6 +151,23 @@ use Term::ANSIColor;
 						'tf/cfg/sourcemod',
 						'tf/em_motd.txt',
 						'tf/em_host.txt'
+					    ],
+		   }
+	'ns2'	=> { # Natural Selection 2
+			'AppId'		 => '4940',
+			'DirImage'	 => $hSettings{'dir_primary'}.'ns2',
+			'ImagePrefix'	 => 'ns2_',
+			'PrimaryImage'   => '00',
+			'DirLogs'	 => 'logs',
+			'DirListConf'	 => [
+						'start*',
+						'config/ServerConfig.json',
+						'config/ServerAdmin.json',
+						'config/MapCycle.json',
+						'config/ConsistencyConfig.json',
+						'BannedPlayers.json'
+					    ],
+			'DirListPayload' => [
 					    ],
 		   }
 );
