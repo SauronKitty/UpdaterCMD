@@ -103,7 +103,7 @@ use Term::ANSIColor;
 			'IgnorePrimary'	 => '1', # Ignore primary image when backing up server configuration
 						 # should be 0 if primary installation is used to run server
 						 # and the server is not run through a hard linked image
-			'DirLogs'	 => 'left4dead2/addons/sourcemod/logs',
+			'DirLogs'	 => 'left4dead2/addons/sourcemod/logs/*',
 			'DirListConf'	 => [
 					     	'start*',
 						'left4dead2/addons/sourcemod/configs/sourcebans/sourcebans.cfg',
@@ -124,7 +124,7 @@ use Term::ANSIColor;
 			'ImagePrefix'	 => 'csgo_',
 			'PrimaryImage'   => '00',
 			'IgnorePrimary'	 => '1',
-			'DirLogs'	 => 'csgo/addons/sourcemod/logs',
+			'DirLogs'	 => 'csgo/addons/sourcemod/logs/*',
 			'DirListConf'	 => [
 					     	'start*',
 						'csgo/addons/sourcemod/configs/sourcebans/sourcebans.cfg',
@@ -144,7 +144,7 @@ use Term::ANSIColor;
 			'ImagePrefix'	 => 'tf2_',
 			'PrimaryImage'   => '00',
 			'IgnorePrimary'	 => '1',
-			'DirLogs'	 => 'tf/addons/sourcemod/logs',
+			'DirLogs'	 => 'tf/addons/sourcemod/logs/*',
 			'DirListConf'	 => [
 					     	'start*',
 						'tf/addons/sourcemod/configs/sourcebans/sourcebans.cfg',
@@ -164,7 +164,7 @@ use Term::ANSIColor;
 			'ImagePrefix'	 => 'ns2_',
 			'PrimaryImage'   => '00',
 			'IgnorePrimary'	 => '0',
-			'DirLogs'	 => 'logs',
+			'DirLogs'	 => 'logs/*',
 			'DirListConf'	 => [
 						'start*',
 						'config/ServerConfig.json',
@@ -499,11 +499,12 @@ sub GenLogArchive(){
 	foreach my $sDir (@sDirs){
 		&changeDir($sDir);
 
+		my $sFolder = &getFolderName($sDir);
 		if($hProfiles{$hSettings{'profile'}}{'IgnorePrimary'}){
-			if(&isPrimary(&getFolderName($sDir))) { next; } # Skip primary installation image
+			if(&isPrimary($sFolder)) { next; } # Skip primary installation image
 		}
-		&exeSysCmd("mkdir -p $sCwd/logs/$1");
-		&packFiles("$Cwd/logs/$1/log-$1-".&getDate(), "-C ".$hProfiles{$hSettings{'profile'}}{'DirLogs'});
+		&exeSysCmd("mkdir -p $sCwd/logs/$sFolder");
+		&packFiles("$sCwd/logs/$sFolder/log-$sFolder-".&getDate(), $hProfiles{$hSettings{'profile'}}{'DirLogs'});
 	}
 	&changeDir($sCwd);
 	return;
