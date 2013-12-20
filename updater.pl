@@ -391,7 +391,7 @@ sub unpackFiles(){
 
 		my $sCwd = getcwd();
 		if(&fileExists($sArchivePath)){
-			$sArchivePath =~ /^.+\/(.+\.tar\.gz)$/; # 
+			$sArchivePath =~ /^.+\/{0,1}(.+\.tar\.gz)$/; # 
 			my $sArchiveName = $1;
 
 			&exeSysCmd("cp $sArchiveName $sTargetDir");
