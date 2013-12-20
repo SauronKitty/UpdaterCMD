@@ -36,7 +36,8 @@ use Term::ANSIColor;
 	'help_title'	  => 'underline'
 );
 
-%hErrorMessages = (
+%hErrorMessages = ( # Added to reduce the number of strings that must be initialized on run time
+		    # Will also make translations easier if needed in the future.
 	'invalid_num_arg'	=> 'Invalid number of arguments',
 	'not_file'		=> 'Given path leads to a directory and not a file',
 	'not_path'		=> 'Given path leads to a file and not a directory',
