@@ -391,7 +391,7 @@ sub unpackFiles(){
 
 		my $sCwd = getcwd();
 		if(&fileExists($sArchivePath)){
-			$sArchivePath =~ /^.+\/(.+\.tar\.gz)$/;
+			$sArchivePath =~ /^.+\/(.+\.tar\.gz)$/; # 
 			my $sArchiveName = $1;
 
 			&exeSysCmd("cp $sArchiveName $sTargetDir");
@@ -500,8 +500,8 @@ sub GenConf(){
 		if($hProfiles{$hSettings{'profile'}}{'IgnorePrimary'}){
 			if(&isPrimary($sFolder)) { next; } # Skip primary installation image
 		}
-		my $sDirOutput = $hSettings{'dir_output'}.'/'.$hSettings{'profile'}."/$sFolder";
-		&exeSysCmd('mkdir -p '.$sDirOutput);
+		my $sDirOutput = $hSettings{'dir_output'}.'/'.$hSettings{'profile'}."/$sFolder"; # /<output_directory>/<profile_name>/<image_name>
+		&exeSysCmd('mkdir -p '.$sDirOutput); # Create folder if it does not exist
 
 		&packFiles($sDirOutput."/$sFolder", join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListConf'}}));
 	}
