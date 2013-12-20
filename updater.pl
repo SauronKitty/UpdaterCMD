@@ -13,7 +13,7 @@ use Term::ANSIColor;
 #####################
 
 %hSettings = (
-	'version'	  => '0.972',
+	'version'	  => '0.980',
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'dir_primary'	  => '/home/emania/hlds/',
@@ -186,19 +186,22 @@ use Term::ANSIColor;
 sub Main(){
 	if(!exists $hProfiles{$hSettings{'profile'}}){
 		&printError("Default profile does not exist.", __LINE__);
-		&Exit();
 	}
+	else{
+		print(colored(['bold'], "Loaded ".$hSettings{'sys_name'}.' '.$hSettings{'version'}."\n"));
+		&CommandInput();
+	}
+	&Exit();
 }
 
 &Main();
-&CommandInput();
 
 #####################
 ##     Console     ##
 #####################
 
 sub CommandInput(){
-	print '('.$hSettings{'profile'}.') '.$hSettings{'console_prefix'}." -> ";
+	print '('.$hSettings{'profile'}.') '.$hSettings{'console_prefix'}.' -> ';
 	my $usrCommand = <>;
 	$usrCommand =~ s/[\$#@~!&*;,?^\|`\\\n]+//g; # Filter un-wanted symbols to avoid
 						    # accidental command injection
@@ -238,6 +241,7 @@ sub exeSysCmd(){
 sub fileExists(){
 	if(@_ == 1){
 		my($sFile) = @_;
+		print "244".$sFile."\n";
 		if(-e $sFile){
 			if(-f $sFile){
 				return 1;
@@ -379,14 +383,17 @@ sub packFiles(){
 # Extracts given tar archive at required destination
 sub unpackFiles(){
 	if(@_ == 2){
-		my($sArchiveName, $sTargetDir) = @_;
+		my($sArchivePath, $sTargetDir) = @_;
 		my $sFlags;
 
 		if($hSettings{'tar_verbose'}) { $sFlags = '-zxvf'; }
 		else { $sFlags = 'zxf'; }
 
 		my $sCwd = getcwd();
-		if(&fileExists($sArchiveName)){
+		if(&fileExists($sArchivePath)){
+			$sArchivePath =~ /^.+\/(.+\.tar\.gz)$/;
+			my $sArchiveName = $1;
+
 			&exeSysCmd("cp $sArchiveName $sTargetDir");
 			if(&fileExists("$sTargetDir/$sArchiveName")){
 				&changeDir($sTargetDir);
@@ -493,7 +500,10 @@ sub GenConf(){
 		if($hProfiles{$hSettings{'profile'}}{'IgnorePrimary'}){
 			if(&isPrimary($sFolder)) { next; } # Skip primary installation image
 		}
-		&packFiles("$sCwd/$sFolder", join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListConf'}}));
+		my $sDirOutput = $hSettings{'dir_output'}.'/'.$hSettings{'profile'}."/$sFolder";
+		&exeSysCmd('mkdir -p '.$sDirOutput);
+
+		&packFiles($sDirOutput."/$sFolder", join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListConf'}}));
 	}
 	&changeDir($sCwd);
 	return;
@@ -512,8 +522,10 @@ sub GenLogArchive(){
 		if($hProfiles{$hSettings{'profile'}}{'IgnorePrimary'}){
 			if(&isPrimary($sFolder)) { next; } # Skip primary installation image
 		}
-		&exeSysCmd("mkdir -p $sCwd/logs/$sFolder");
-		&packFiles("$sCwd/logs/$sFolder/log-$sFolder-".&getDate(), $hProfiles{$hSettings{'profile'}}{'DirLogs'});
+		my $sDirOutput = $hSettings{'dir_output'}.'/'.$hSettings{'profile'}."/$sFolder/logs";
+		&exeSysCmd('mkdir -p '.$sDirOutput);
+
+		&packFiles($sDirOutput."/log-$sFolder-".&getDate(), $hProfiles{$hSettings{'profile'}}{'DirLogs'});
 	}
 	&changeDir($sCwd);
 	return;
@@ -526,7 +538,10 @@ sub GenPayload(){
 
 	&changeDir($hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'});
 	if(scalar @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}){
-		&packFiles("$sCwd/em_payload-".$hSettings{'profile'}.'-'.&getDate(), join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}));
+		my $sDirOutput = $hSettings{'dir_output'}.'/'.$hSettings{'profile'};
+		&exeSysCmd('mkdir -p '.$sDirOutput);
+
+		&packFiles($sDirOutput."/em_payload-".$hSettings{'profile'}.'-'.&getDate(), join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}));
 	}
 	else { &printError("DirListPayload is empty. Please check profile", __LINE__); }
 	&changeDir($sCwd);
@@ -626,7 +641,9 @@ sub RespawnImage(){
 			rmtree($sDestination);
 			&SpawnImage($sImageSuffix);
 
-			my $sPatchImage = &getFolderName($sDestination).".tar.gz";
+			my $sDirOutput 	= $hSettings{'dir_output'}.'/'.$hSettings{'profile'}.'/'.&getFolderName($sDestination);
+			my $sPatchImage = $sDirOutput.'/'.&getFolderName($sDestination).".tar.gz";
+
 			if(-e $sPatchImage){
 				if($hSettings{'auto_patch'} != 1){
 					print("Patch image ($sPatchImage) found. Apply patch? (Y/N)\n");
