@@ -13,7 +13,7 @@ use Term::ANSIColor;
 #####################
 
 %hSettings = (
-	'version'	  => '0.980',
+	'version'	  => '0.981',
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'dir_primary'	  => '/home/emania/hlds/',
@@ -34,6 +34,27 @@ use Term::ANSIColor;
 	'exit_message'	  => 'bold',
 	'help_command'	  => 'bold',
 	'help_title'	  => 'underline'
+);
+
+%hErrorMessages = (
+	'invalid_num_arg'	=> 'Invalid number of arguments',
+	'not_file'		=> 'Given path leads to a directory and not a file',
+	'not_path'		=> 'Given path leads to a file and not a directory',
+	'dne_archive'		=> 'Given archive does not exist',
+	'dne_file'		=> 'Given file does not exist',
+	'dne_path'		=> 'Given path does not exist',
+	'dne_patch'		=> 'Patch file does not exist',
+	'dne_primary'		=> 'Primary installation image does not exist',
+	'dne_profile'		=> 'Profile does not exist',
+	'dne_image'		=> 'Image does not exist',
+	'dne_cmd'		=> 'Command does not exist',
+	'dne_cvar'		=> 'Cvar does not exist',
+	'dne_steamcmd'		=> 'SteamCMD installation has not been found',
+	'error_chdir'		=> 'Unable to change directory',
+	'error_rmfile'		=> 'Unable to remove file',
+	'error_rmdir'		=> 'Unable to remove directpry',
+	'abort_patching'	=> 'Patching has been aborted',
+	'abort_steam_update'	=> 'Server file update has been aborted',
 );
 
 %hFunctions = (
@@ -185,7 +206,7 @@ use Term::ANSIColor;
 
 sub Main(){
 	if(!exists $hProfiles{$hSettings{'profile'}}){
-		&printError("Default profile does not exist.", __LINE__);
+		&printError($hErrorMessages{'dne_profile'}, __LINE__);
 	}
 	else{
 		print(colored(['bold'], "Loaded ".$hSettings{'sys_name'}.' '.$hSettings{'version'}."\n"));
@@ -215,7 +236,7 @@ sub ProcessCommand(){
 	my $usrCommand = shift(@usrTokens);
 
         if (exists $hFunctions{$usrCommand}){ &{$hFunctions{$usrCommand}{'Refrence'}}(@usrTokens); }
-        else { &printError("Command not found", __LINE__); }
+	else { &printError($hErrorMessages{'dne_cmd'}, __LINE__); }
 
         &CommandInput();
 }
@@ -234,23 +255,23 @@ sub exeSysCmd(){
 		my($sCmd) = @_;
 		system("$sCmd\n");
 	}
-	else { &printError("Invalid number of arguments", __LINE__); }
+	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
 }
 # Checks if a given file exists
 sub fileExists(){
 	if(@_ == 1){
 		my($sFile) = @_;
-		print "244".$sFile."\n";
+
 		if(-e $sFile){
 			if(-f $sFile){
 				return 1;
 			}
-			else { &printError("Given path does not lead to a file", __LINE__); }
+			else { &printError($hErrorMessages{'not_file'}, __LINE__); }
 		}
-		else { &printError("Given file does not exist", __LINE__); }
+		else { &printError($hErrorMessages{'dne_file'}, __LINE__); }
 	}
-	else { &printError("Invalid number of arguments", __LINE__); }
+	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return 0;
 }
 # Checks if a given folder exists
@@ -261,11 +282,11 @@ sub dirExists(){
 			if(-d $sDir){
 				return 1;
 			}
-			else { &printError("Given path is not a directory", __LINE__); }
+			else { &printError($hErrorMessages{'not_path'}, __LINE__); }
 		}
-		else { &printError("Given path does not exist", __LINE__); }
+		else { &printError($hErrorMessages{'dne_path'}, __LINE__); }
 	}
-	else { &printError("Invalid number of arguments", __LINE__); }
+	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return 0;
 }
 # Changes pwd to the given dir
@@ -273,12 +294,12 @@ sub changeDir(){
 	if(@_ == 1){
 		my($sDir) = @_;
 		if(&dirExists($sDir)){
-			chdir($sDir) || &printError("Unable to change directory", __LINE__);
+			chdir($sDir) || &printError($hErrorMessages{'error_chdir'}, __LINE__);
 			return 1;
 		}
-		else { &printError("Unable to change directory", __LINE__); }
+		else { &printError($hErrorMessages{'error_chdir'}, __LINE__); }
 	}
-	else { &printError("Invalid number of arguments", __LINE__); }
+	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	&Exit();
 	return 0;
 }
@@ -289,9 +310,9 @@ sub rmDir(){
 		if(&dirExists($sDir)){
 			&exeSysCmd("rm -rf $sDir");
 		}
-		else { &printError("Unable to remove directory", __LINE__); }
+		else { &printError($hErrorMessages{'error_rmdir'}, __LINE__); }
 	}
-	else { &printError("Invalid number of arguments", __LINE__); }
+	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
 }
 # Removes a given file
@@ -301,9 +322,9 @@ sub rmFile(){
 		if(&fileExists($sFile)){
 			&exeSysCmd("rm $sFile");
 		}
-		else { &printError("Unable to remove file", __LINE__); }
+		else { &printError($hErrorMessages{'error_rmfile'}, __LINE__); }
 	}
-	else { &printError("Invalid number or arguments", __LINE__); }
+	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
 }
 
@@ -331,7 +352,7 @@ sub forkImage(){
 		}
 		else { &printError("Image already exists", __LINE__); }
 	}
-	else { &printError("Invalid number or arguments", __LINE__); }
+	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
 }
 
@@ -344,7 +365,7 @@ sub isPrimary(){
 		if($sDirName eq $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'}){ return 1; } 
 		else{ return 0; }
 	}
-	else { &printError("Invalid number of arguments", __LINE__); }
+	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 }
 # Returns a list of all installation images
 sub getInstallations(){
@@ -361,7 +382,7 @@ sub listContents(){
 		my($sArchiveName) = @_[0];
 
 		if(&fileExists($sArchiveName)){ &exeSysCmd("tar -ztvf $sArchiveName"); }
-		else { &printError("An error occured while attempting to locate the archive", __LINE__); }
+		else { &printError($hErrorMessages{'dne_archive'}, __LINE__); }
 	}
 	else { &printError("Archive name not specified", __LINE__); }
 	return;
@@ -377,7 +398,7 @@ sub packFiles(){
 
 		&exeSysCmd("tar $sFlags $sArchiveName.tar.gz $sFiles");
 	}
-	else{ &printError("Invalid number of arguments received", __LINE__); }
+	else{ &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
 }
 # Extracts given tar archive at required destination
@@ -406,9 +427,9 @@ sub unpackFiles(){
 			}
 			else{ &printError("An error occured while copying the archive", __LINE__); return; }
 		}
-		else{ &printError("An error occured while attempting to locate the archive", __LINE__); return; }
+		else{ &printError($hErrorMessages{'dne_archive'}, __LINE__); return; }
 	}
-	else { &printError("Invalid number of arguments received", __LINE__); return; }
+	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); return; }
 	return
 }
 
@@ -427,10 +448,10 @@ sub getPrimaryImagePath(){
 sub getFolderName(){
 	if(@_ == 1){
 		my($sDirPath) = @_;
-		if(-d $sDirPath) { $sDirPath =~ /^.+\/(.+)$/; return($1); }
-		else{ &printError("Received argument is not a directory path, or director does not exist", __LINE__); }
+		if(&dirExists($sDirPath)) { $sDirPath =~ /^.+\/(.+)$/; return($1); }
+		else{ &printError("Unable to return folder name", __LINE__); }
 	}
-	else { &printError("Invalid number of arguments", __LINE__); }
+	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return
 }
 # Prints a status message to the user
@@ -438,7 +459,7 @@ sub printStatus(){
 	if(@_ == 1){
 		my($sStatusMsg) = @_;
 		print($sStatusMsg."\n");
-	} else { &printError("Invalid number of arguments", __LINE__); }
+	} else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
 }
 # Prints an error message to the user
@@ -446,7 +467,7 @@ sub printError(){
 	if(@_ == 2){
 		my($sErrorMsg, $iLineNum) = @_;
 		print(colored([$hColors{'error_prefix'}], $hSettings{'error_prefix'}).$hSettings{'error_seperator'}.$sErrorMsg." ($iLineNum)\n");
-	} else { &printError("Invalid number of arguments", __LINE__); }
+	} else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
 }
 # Returns date in the YYYY.MM.DD format
@@ -561,9 +582,9 @@ sub PatchAll(){
 			if($sUsrReply =~ /^[Y]?$/i){
 				foreach $sDir (@sDirs){ &unpackFiles($sArchiveName, $sDir); }
 			}
-			else { &printError("Patching aborted", __LINE__); return; }
+			else { &printError($hErrorMessages{'abort_patching'}, __LINE__); return; }
 		}
-		else { &printError("No installation images found", __LINE__); }
+		else { &printError($hErrorMessages{'dne_image'}, __LINE__); }
 	}
 	else { &printError("Archive name not specified", __LINE__); }
 	return;
@@ -580,11 +601,11 @@ sub PatchImage(){
 			if(&dirExists($sDestination)){
 				&unpackFiles($sArchiveName, $sDestination);
 			}
-			else { &printError("Installation image not found", __LINE__); }
+			else { &printError($hErrorMessages{'dne_primary'}, __LINE__); }
 		}
-		else { &printError("Patch file not found", __LINE__); }
+		else { &printError($hErrorMessages{'dne_patch'}, __LINE__); }
 	}
-	else { &printError("Invalid number of arguments", __LINE__); }
+	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
 }
 # Updates a value in the %hSettings hash.
@@ -594,14 +615,14 @@ sub SetUpdaterCvar(){
 
 		if (exists $hSettings{$sSetting}){
 			if($sSetting eq 'profile'){
-				if(!exists $hProfiles{$sNewValue}){ &printError("Profile does not exist", __LINE__); }
+				if(!exists $hProfiles{$sNewValue}){ &printError($hErrorMessages{'dne_profile'}, __LINE__); }
 				else { $hSettings{$sSetting} = $sNewValue; }
 			}
 			else { $hSettings{$sSetting} = $sNewValue; }
 		}
-		else { &printError("Cvar not found", __LINE__); }
+		else { &printError($hErrorMessages{'dne_cvar'}, __LINE__); }
 	}
-	else { &printError("Invalid number of arguments", __LINE__); }
+	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
 }
 # Creates an installation image
@@ -651,7 +672,7 @@ sub RespawnImage(){
 					print("Patch image ($sPatchImage) found. Apply patch? (Y/N)\n");
 					my $sUsrReply = <>;
 					unless($sUsrReply =~ /^[Y]?$/i){
-						&printError("Patching aborted", __LINE__);
+						&printError($hErrorMessages{'abort_patching'}, __LINE__);
 						return;
 					}
 				}
@@ -662,7 +683,7 @@ sub RespawnImage(){
 		}
 		else { &printError("Respawn failed. Image does not exist", __LINE__); return; }
 	}
-	else { &printError("Invalid number of arguments", __LINE__); }
+	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
 }
 
@@ -681,7 +702,7 @@ sub checkSteamCmd(){
 	if(&fileExists($sCmdDir)){
 		return $sCmdDir;
 	}
-	else { &printError("SteamCMD not found", __LINE__); }
+	else { &printError($hErrorMessages{'dne_steamcmd'}, __LINE__); }
 	return 0;
 }
 
@@ -698,6 +719,6 @@ sub UpdateServerFiles(){
 		my $sAppId = $hProfiles{$hSettings{'profile'}}{'AppId'};
 		&exeSysCmd("sh $sCmdDir +login anonymous +force_install_dir $sPrimaryImage +app_update $sAppId +quit");
 	}
-	else { &printError("Primary image not found. File update aborted"); }
+	else { &printError($hErrorMessages{'dne_primary'}, __LINE__); }
 	return;
 }
