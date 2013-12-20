@@ -18,6 +18,7 @@ use Term::ANSIColor;
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'dir_primary'	  => '/home/emania/hlds/',
 	'dir_steamcmd'	  => '/home/emania/SteamCMD/',
+	'dir_output'	  => getcwd(),
 	'exe_steamcmd'	  => 'steamcmd.sh',
 	'fork_verbose'	  => 0,
 	'tar_verbose'	  => 0,
@@ -182,6 +183,14 @@ use Term::ANSIColor;
 ##      Main       ##
 #####################
 
+sub Main(){
+	if(!exists $hProfiles{$hSettings{'profile'}}){
+		&printError("Default profile does not exist.", __LINE__);
+		&Exit();
+	}
+}
+
+&Main();
 &CommandInput();
 
 #####################
