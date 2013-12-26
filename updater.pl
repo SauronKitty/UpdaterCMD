@@ -54,8 +54,11 @@ use Term::ANSIColor;
 	'error_chdir'		=> 'Unable to change directory',
 	'error_rmfile'		=> 'Unable to remove file',
 	'error_rmdir'		=> 'Unable to remove directpry',
+	'error_cp_archive'	=> 'An error occured while copying the archive',
+	'error_dirlist_empty'	=> 'DirListPayload is empty. Please check the '.$hSettings{'profile'}.' profile settings',
 	'abort_patching'	=> 'Patching has been aborted',
 	'abort_steam_update'	=> 'Server file update has been aborted',
+	'generic_echo_000'	=> 'Nothing to echo'
 );
 
 %hFunctions = (
@@ -83,7 +86,7 @@ use Term::ANSIColor;
 				'Refrence'	=> \&GenLogArchive,
 				'Description'	=> 'Generates an archive, storing all log files in an archive'
 			   },
-	'patchall'		=> {
+	'patchall'	=> {
 				'Refrence'	=> \&PatchAll,
 				'Description'	=> 'Applies a .tar.gz patch file to all detected installation images. Usage: patch <patchfile>'
 			   },
@@ -292,7 +295,7 @@ sub dirExists(){
 }
 # Changes pwd to the given dir
 sub changeDir(){
-	if(@_ == 1){
+	if(@_ == 1){ # Needs update
 		my($sDir) = @_;
 		if(&dirExists($sDir)){
 			chdir($sDir) || &printError($hErrorMessages{'error_chdir'}, __LINE__);
@@ -418,7 +421,7 @@ sub unpackFiles(){
 			if($sArchivePath =~ m/^.+\/(.+\.tar\.gz)$/){ $sArchiveName = $1; } # If a path has been passed instead of an archive name
 			###    END   ### 000                ###
 
-			&exeSysCmd("cp $sArchiveName $sTargetDir");
+			&exeSysCmd("cp $sArchivePath $sTargetDir");
 			if(&fileExists("$sTargetDir/$sArchiveName")){
 				&changeDir($sTargetDir);
 				&exeSysCmd("tar $sFlags $sArchiveName");
@@ -426,7 +429,7 @@ sub unpackFiles(){
 								# will check whether the file exists once again.
 				&changeDir($sCwd);
 			}
-			else{ &printError("An error occured while copying the archive", __LINE__); return; }
+			else{ &printError($hErrorMessages{'error_cp_archive'}, __LINE__); return; }
 		}
 		else{ &printError($hErrorMessages{'dne_archive'}, __LINE__); return; }
 	}
@@ -486,7 +489,7 @@ sub getDate(){
 
 # Displays each command currently available
 sub DisplayHelp(){
-	print $hSettings{'sys_name'}." | v".$hSettings{'version'}."\n".colored([$hColors{'help_title'}], Commands).":\n";
+	print $hSettings{'sys_name'}.' | v'.$hSettings{'version'}."\n".colored([$hColors{'help_title'}], Commands).":\n";
 	foreach my $Key (keys %hFunctions){
 		printf("- %s: %s\n", colored([$hColors{'help_command'}], $Key), $hFunctions{$Key}{'Description'});
 	}
@@ -505,10 +508,10 @@ sub ListInstallations(){
 # purposes.
 sub Echo(){
 	if(@_ > 0){
-		foreach my $Token (@_){ print $Token." "; }
+		foreach my $Token (@_){ print $Token.' '; }
 		print "\n";
 	}
-	else { &printError("Nothing to echo", __LINE__); }
+	else { &printError($hErrorMessages{'generic_echo_000'}, __LINE__); } # Nothing to echo
 	return;
 }
 # Generates configuration file images from the forked installation
@@ -567,7 +570,7 @@ sub GenPayload(){
 
 		&packFiles($sDirOutput."/em_payload-".$hSettings{'profile'}.'-'.&getDate(), join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}));
 	}
-	else { &printError("DirListPayload is empty. Please check profile", __LINE__); }
+	else { &printError($hErrorMessages{'error_dirlist_empty'}, __LINE__); }
 	&changeDir($sCwd);
 }
 # Applies a .tar.gz patch archive to all installation images
@@ -682,7 +685,7 @@ sub RespawnImage(){
 			}
 			else { &printError("Patch image not found. Proceeding without configuration patch", __LINE__); }
 		}
-		else { &printError("Respawn failed. Image does not exist", __LINE__); return; }
+		else { &printError($hErrorMessages{'dne_image'}, __LINE__); return; }
 	}
 	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
