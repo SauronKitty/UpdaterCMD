@@ -44,6 +44,7 @@ use Term::ANSIColor;
 	'dne_archive'		=> 'Given archive does not exist',
 	'dne_file'		=> 'Given file does not exist',
 	'dne_path'		=> 'Given path does not exist',
+	'dne_dir_patch'		=> 'Patch directory for selected profile does not exist',
 	'dne_patch'		=> 'Patch file does not exist',
 	'dne_primary'		=> 'Primary installation image does not exist',
 	'dne_profile'		=> 'Profile does not exist',
@@ -450,8 +451,17 @@ sub getPrimaryImagePath(){
 }
 # Get path to the profile's patch folder
 sub getPatchDir(){
-	my $sPatchDir = %hSettings{'profile'}.'/patches/';
-	return($sPatchDir);
+	if(@_ == 1){
+		my($sArchiveName) = @_;
+		if(&fileExists($sArchiveName)){ return($sArchiveName); }
+		else {
+			$sArchiveName = %hSettings{'profile'}.'/patches/'.$sArchiveName;
+			if(&fileExists($sArchiveName)){ return($sArchiveName); }
+		}
+		&printError($hMessages{'dne_patch'}, __LINE__);
+	}
+	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
+	&CommandInput(); # Return to command line after this function fails
 }
 # Returns the folder name from a given path
 sub getFolderName(){
