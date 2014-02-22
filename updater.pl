@@ -448,6 +448,11 @@ sub getPrimaryImagePath(){
 			    $hProfiles{$hSettings{'profile'}}{'PrimaryImage'};
 	return($sPrimaryImage);
 }
+# Get path to the profile's patch folder
+sub getPatchDir(){
+	my $sPatchDir = %hSettings{'profile'}.'/patches/';
+	return($sPatchDir);
+}
 # Returns the folder name from a given path
 sub getFolderName(){
 	if(@_ == 1){
