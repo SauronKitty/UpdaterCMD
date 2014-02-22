@@ -44,7 +44,6 @@ use Term::ANSIColor;
 	'dne_archive'		=> 'Given archive does not exist',
 	'dne_file'		=> 'Given file does not exist',
 	'dne_path'		=> 'Given path does not exist',
-	'dne_dir_patch'		=> 'Patch directory for selected profile does not exist',
 	'dne_patch'		=> 'Patch file does not exist',
 	'dne_primary'		=> 'Primary installation image does not exist',
 	'dne_profile'		=> 'Profile does not exist',
@@ -341,9 +340,6 @@ sub rmFile(){
 sub forkImage(){
 	if(@_ == 1){
 		my($sImageSuffix) = @_;
-#		my $sPrimaryImage = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
-#				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
-#				    $hProfiles{$hSettings{'profile'}}{'PrimaryImage'};
 		my $sPrimaryImage = &getPrimaryImagePath();
 		my $sDestination  = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
 				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
@@ -595,6 +591,7 @@ sub PatchAll(){
 		my @sDirs = &getInstallations();
 		my $iNumImages = scalar @sDirs;
 		if($iNumImages > 0){
+			$sArchiveName = &getPatchDir($sArchiveName);
 			&listContents($sArchiveName);
 			print("Apply patch ? (y/n) -> ");
 			my $sUsrReply = <>;
@@ -616,13 +613,11 @@ sub PatchImage(){
 		my $sDestination  = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
 				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
 				    $sImageSuffix;
-		if(&fileExists($sArchiveName)){
-			if(&dirExists($sDestination)){
-				&unpackFiles($sArchiveName, $sDestination);
-			}
-			else { &printError($hErrorMessages{'dne_primary'}, __LINE__); }
+		$sArchiveName = &getPatchDir($sArchiveName);
+		if(&dirExists($sDestination)){
+			&unpackFiles($sArchiveName, $sDestination);
 		}
-		else { &printError($hErrorMessages{'dne_patch'}, __LINE__); }
+		else { &printError($hErrorMessages{'dne_primary'}, __LINE__); }
 	}
 	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
