@@ -5,6 +5,8 @@ profile			Sets the current profile to load. Value must be present in the %hProfi
 sys_name		Sets the application name.
 dir_primary
 dir_steamcmd
+dir_ouput
+exe_steamcmd
 fork_verbose		Sets image forking verbosity. Value must be either 1 or 0.
 tar_verbose		Sets file compression verbosity. Value must be either 1 or 0.
 auto_patch
@@ -25,6 +27,7 @@ listContents()		void listContents(string $_[0])			| $_[0]	= Path to  archive
 packFiles()		void packFiles(string $_[0], string $_[1]) 	| $_[0] = Path to archive $_[1] = Space seperated string of files to add
 unpackFiles()		void unpackFiles(string $_[0], string $_[1])	| $_[0] = Path to archive $_[1] = Path to extract archive
 getPrimaryImagePath()	$string getPrimaryImagePath()			| Returns path to primary installation image for selected profile
+getPatchDir()		$string getPatchDir()				| $_[0] = Archive name (Checks cwd for patch file, if not found checks patch folder for the given file and returns the path prefixed to the given archive name)
 getFolderName()		$string getFolderName(string $_[0])		| $_[0] = Path to folder (Returns the folder at end of path)
 getInstallations()	@string getInstallations()			| (Returns list of installations based on $hProfiles{'xx'}{'ImagePrefix'}
 printError()		void printError(string $_[0], int $_[1])	| $_[0] = Error message $_[1] = __LINE__ number function was called at
@@ -46,3 +49,6 @@ UpdateServerFiles()
 Exit()
 
 RespawnImage()
+
+checkSteamCmd()
+UpdateServerFiles()
