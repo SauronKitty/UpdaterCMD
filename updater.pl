@@ -451,7 +451,7 @@ sub getPatchDir(){
 		my($sArchiveName) = @_;
 		if(&fileExists($sArchiveName)){ return($sArchiveName); }
 		else {
-			$sArchiveName = %hSettings{'profile'}.'/patches/'.$sArchiveName;
+			$sArchiveName = $hSettings{'profile'}.'/patches/'.$sArchiveName;
 			if(&fileExists($sArchiveName)){ return($sArchiveName); }
 		}
 		&printError($hMessages{'dne_patch'}, __LINE__);
