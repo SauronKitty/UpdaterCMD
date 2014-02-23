@@ -449,7 +449,7 @@ sub getPatchDir(){
 		my($sArchiveName) = @_;
 		if(&fileExists($sArchiveName)){ return($sArchiveName); }
 		else {
-			$sArchiveName = $hSettings{'profile'}.'/patches/'.$sArchiveName;
+			$sArchiveName = $hSettings{'dir_output'}.'/'.$hSettings{'profile'}.'/patches/'.$sArchiveName;
 			if(&fileExists($sArchiveName)){ return($sArchiveName); }
 		}
 		&printError($hErrorMessages{'dne_patch'}, __LINE__);
@@ -672,7 +672,12 @@ sub RespawnImage(){
 				    $sImageSuffix;
 		if(&dirExists($sDestination)){
 			# Backup configuration image
+			&printStatus("Generating configuration image");
+			GenConf();
 			# Backup logs
+			&printStatus("Generating log archive");
+			GenLogArchive();
+
 			rmtree($sDestination);
 			&SpawnImage($sImageSuffix);
 
