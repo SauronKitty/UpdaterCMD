@@ -40,28 +40,34 @@ my %hColors = (
 
 my %hErrorMessages = ( # Added to reduce the number of strings that must be initialized on run time
 		       # Will also make translations easier if needed in the future.
-	'invalid_num_arg'	=> 'Invalid number of arguments',
-	'usr_root'		=> 'You are not permitted to run this application as the root user',
-	'not_file'		=> 'Given path leads to a directory and not a file',
-	'not_path'		=> 'Given path leads to a file and not a directory',
-	'dne_archive'		=> 'Given archive does not exist',
-	'dne_file'		=> 'Given file does not exist',
-	'dne_path'		=> 'Given path does not exist',
-	'dne_patch'		=> 'Patch file does not exist',
-	'dne_primary'		=> 'Primary installation image does not exist',
-	'dne_profile'		=> 'Profile does not exist',
-	'dne_image'		=> 'Image does not exist',
-	'dne_cmd'		=> 'Command does not exist',
-	'dne_cvar'		=> 'Cvar does not exist',
-	'dne_steamcmd'		=> 'SteamCMD installation has not been found',
-	'error_chdir'		=> 'Unable to change directory',
-	'error_rmfile'		=> 'Unable to remove file',
-	'error_rmdir'		=> 'Unable to remove directpry',
-	'error_cp_archive'	=> 'An error occured while copying the archive',
-	'error_dirlist_empty'	=> 'DirListPayload is empty. Please check the '.$hSettings{'profile'}.' profile settings',
-	'abort_patching'	=> 'Patching has been aborted',
-	'abort_steam_update'	=> 'Server file update has been aborted',
-	'generic_echo_000'	=> 'Nothing to echo'
+	'invalid_num_arg'		=> 'Invalid number of arguments',
+	'invalid_archive_name'		=> 'Archive name invalid or not specified',
+	'usr_root'			=> 'You are not permitted to run this application as the root user',
+	'not_file'			=> 'Given path leads to a directory and not a file',
+	'not_path'			=> 'Given path leads to a file and not a directory',
+	'dne_archive'			=> 'Given archive does not exist',
+	'dne_conf_archive'		=> 'Configuration image not found',
+	'dne_file'			=> 'Given file does not exist',
+	'dne_path'			=> 'Given path does not exist',
+	'dne_patch'			=> 'Patch file does not exist',
+	'dne_primary'			=> 'Primary installation image does not exist',
+	'dne_profile'			=> 'Profile does not exist',
+	'dne_image'			=> 'Image does not exist',
+	'dne_cmd'			=> 'Command does not exist',
+	'dne_cvar'			=> 'Cvar does not exist',
+	'dne_steamcmd'			=> 'SteamCMD installation has not been found',
+	'error_chdir'			=> 'Unable to change directory',
+	'error_rmfile'			=> 'Unable to remove file',
+	'error_rmdir'			=> 'Unable to remove directpry',
+	'error_image_exists'		=> 'Image already exists',
+	'error_cp_archive'		=> 'An error occured while copying the archive',
+	'error_dirlist_empty'		=> 'DirListPayload is empty. Please check the '.$hSettings{'profile'}.' profile settings',
+	'error_steamcmd_update' 	=> 'Unable to update server files',
+	'abort_patching'		=> 'Patching has been aborted',
+	'abort_steam_update'		=> 'Server file update has been aborted',
+	'generic_echo_000'		=> 'Nothing to echo',
+	'generic_getfoldername_000'	=> 'Unable to return folder name',
+	'generic_forkimage_000'		=> 'Unable to create an installation image'
 );
 
 my %hFunctions = (
@@ -360,9 +366,9 @@ sub forkImage(){
 				if($hSettings{'fork_verbose'}){ &exeSysCmd("cp -Rlv $sPrimaryImage $sDestination"); }
 				else { &exeSysCmd("cp -Rl $sPrimaryImage $sDestination"); }
 			}
-			else { &printError("Unable to create an installation image", __LINE__); }
+			else { &printError($hErrorMessages{'generic_forkimage_000'}, __LINE__); }
 		}
-		else { &printError("Image already exists", __LINE__); }
+		else { &printError($hErrorMessages{'error_image_exists'}, __LINE__); }
 	}
 	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
@@ -396,7 +402,7 @@ sub listContents(){
 		if(&fileExists($sArchiveName)){ &exeSysCmd("tar -ztvf $sArchiveName"); }
 		else { &printError($hErrorMessages{'dne_archive'}, __LINE__); }
 	}
-	else { &printError("Archive name not specified", __LINE__); }
+	else { &printError($hErrorMessages{'invalid_archive_name'}, __LINE__); }
 	return;
 }
 # Compresses given files into a tar archive
@@ -466,7 +472,7 @@ sub getFolderName(){
 	if(@_ == 1){
 		my($sDirPath) = @_;
 		if(&dirExists($sDirPath)) { $sDirPath =~ /^.+\/(.+)$/; return($1); }
-		else{ &printError("Unable to return folder name", __LINE__); }
+		else{ &printError($hErrorMessages{'generic_getfoldername_000'}, __LINE__); }
 	}
 	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return
@@ -604,7 +610,7 @@ sub PatchAll(){
 		}
 		else { &printError($hErrorMessages{'dne_image'}, __LINE__); }
 	}
-	else { &printError("Archive name not specified", __LINE__); }
+	else { &printError($hErrorMessages{'invalid_archive_name'}, __LINE__); }
 	return;
 }
 # Patches a single image given an image suffix and an archive name
@@ -700,7 +706,7 @@ sub RespawnImage(){
 				&PatchImage($sPatchImage, $sImageSuffix);
 				&printStatus("Patch applied");
 			}
-			else { &printError("Patch image not found. Proceeding without configuration patch", __LINE__); }
+			else { &printError($hErrorMessages{'dne_conf_archive'}, __LINE__); }
 		}
 		else { &printError($hErrorMessages{'dne_image'}, __LINE__); return; }
 	}
@@ -733,7 +739,7 @@ sub checkSteamCmd(){
 
 # Passes commands to SteamCMD to update server file installations
 sub UpdateServerFiles(){
-	my $sCmdDir = &checkSteamCmd() or do{ &printError("Unable to update server files", __LINE__); return; };
+	my $sCmdDir = &checkSteamCmd() or do{ &printError($hErrorMessages{'error_steamcmd_update'}, __LINE__); return; };
 
 	my $sPrimaryImage = &getPrimaryImagePath();
 	if(&dirExists($sPrimaryImage)){
@@ -746,7 +752,7 @@ sub UpdateServerFiles(){
 # Creates missing folders required to install the files for a primary image; then calls the &UpdateServerFiles()
 # function in order to download the necessary files
 sub InstallServerFiles(){
-	my $sCmdDir = &checkSteamCmd() or do{ &printError("Unable to update server files", __LINE__); return; };
+	my $sCmdDir = &checkSteamCmd() or do{ &printError($hErrorMessages{'error_steamcmd_update'}, __LINE__); return; };
 
 	my $sPrimaryImage = &getPrimaryImagePath();
 	unless(&dirExists($sPrimaryImage)){
