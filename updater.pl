@@ -1,8 +1,10 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 # eM-UpdaterCMD
 # Written by evilmaniac
 # http://www.evilmania.net
+
+use strict;
 
 use Cwd;
 use File::Path;
@@ -12,8 +14,8 @@ use Term::ANSIColor;
 ##    Variables    ##
 #####################
 
-%hSettings = (
-	'version'	  => '0.990',
+my %hSettings = (
+	'version'	  => '0.991',
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'dir_primary'	  => '/home/emania/hlds/',
@@ -29,15 +31,15 @@ use Term::ANSIColor;
 	'exit_message'	  => 'Terminating...'
 );
 
-%hColors = (
+my %hColors = (
 	'error_prefix'	  => 'red',
 	'exit_message'	  => 'bold',
 	'help_command'	  => 'bold',
 	'help_title'	  => 'underline'
 );
 
-%hErrorMessages = ( # Added to reduce the number of strings that must be initialized on run time
-		    # Will also make translations easier if needed in the future.
+my %hErrorMessages = ( # Added to reduce the number of strings that must be initialized on run time
+		       # Will also make translations easier if needed in the future.
 	'invalid_num_arg'	=> 'Invalid number of arguments',
 	'not_file'		=> 'Given path leads to a directory and not a file',
 	'not_path'		=> 'Given path leads to a file and not a directory',
@@ -61,7 +63,7 @@ use Term::ANSIColor;
 	'generic_echo_000'	=> 'Nothing to echo'
 );
 
-%hFunctions = (
+my %hFunctions = (
 	'help' 		=> {
 			    	'Refrence'	=> \&DisplayHelp,
 				'Description'	=> 'Displays this message'
@@ -124,7 +126,7 @@ use Term::ANSIColor;
 ## Default Profile ##
 #####################
 
-%hProfiles = (
+my %hProfiles = (
 	'l4d2'	=> { # Left 4 Dead 2
 			'AppId'		 => '222860',
 			'DirImage'	 => $hSettings{'dir_primary'}.'l4d2',
@@ -384,7 +386,7 @@ sub getInstallations(){
 # Lists contents of a compressed tar archive
 sub listContents(){
 	if(@_ == 1){
-		my($sArchiveName) = @_[0];
+		my($sArchiveName) = $_[0];
 
 		if(&fileExists($sArchiveName)){ &exeSysCmd("tar -ztvf $sArchiveName"); }
 		else { &printError($hErrorMessages{'dne_archive'}, __LINE__); }
@@ -458,7 +460,7 @@ sub getPatchDir(){
 			$sArchiveName = $hSettings{'profile'}.'/patches/'.$sArchiveName;
 			if(&fileExists($sArchiveName)){ return($sArchiveName); }
 		}
-		&printError($hMessages{'dne_patch'}, __LINE__);
+		&printError($hErrorMessages{'dne_patch'}, __LINE__);
 	}
 	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	&CommandInput(); # Return to command line after this function fails
@@ -504,7 +506,7 @@ sub getDate(){
 
 # Displays each command currently available
 sub DisplayHelp(){
-	print $hSettings{'sys_name'}.' | v'.$hSettings{'version'}."\n".colored([$hColors{'help_title'}], Commands).":\n";
+	print $hSettings{'sys_name'}.' | v'.$hSettings{'version'}."\n".colored([$hColors{'help_title'}], 'Commands').":\n";
 	foreach my $Key (keys %hFunctions){
 		printf("- %s: %s\n", colored([$hColors{'help_command'}], $Key), $hFunctions{$Key}{'Description'});
 	}
@@ -514,7 +516,7 @@ sub DisplayHelp(){
 # including primary installation and all forked installations
 sub ListInstallations(){
 	my @sDirs = getInstallations();
-	foreach $sDir (@sDirs){
+	foreach my $sDir (@sDirs){
 		print($sDir."\n");
 	}
 	return;
@@ -600,7 +602,7 @@ sub PatchAll(){
 			print("Apply patch ? (y/n) -> ");
 			my $sUsrReply = <>;
 			if($sUsrReply =~ /^[Y]?$/i){
-				foreach $sDir (@sDirs){ &unpackFiles($sArchiveName, $sDir); }
+				foreach my $sDir (@sDirs){ &unpackFiles($sArchiveName, $sDir); }
 			}
 			else { &printError($hErrorMessages{'abort_patching'}, __LINE__); return; }
 		}
