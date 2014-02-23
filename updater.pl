@@ -110,6 +110,10 @@ use Term::ANSIColor;
 				'Refrence'	=> \&UpdateServerFiles,
 				'Description'	=> 'Downloads the latest patch files from the Valve servers and updates the primary isntallation image'
 			   },
+	'install'	=> {
+				'Refrence'	=> \&InstallServerFiles,
+				'Description'	=> 'Installs the game files for currently selected profile (set profile <profile>)'
+			   },
         'exit' 		=> {
 				'Refrence'	=> \&Exit,
 				'Description'	=> 'Exits the UpdaterCMD'
@@ -732,7 +736,25 @@ sub UpdateServerFiles(){
 	if(&dirExists($sPrimaryImage)){
 		my $sAppId = $hProfiles{$hSettings{'profile'}}{'AppId'};
 		&exeSysCmd("sh $sCmdDir +login anonymous +force_install_dir $sPrimaryImage +app_update $sAppId +quit");
-	}
+	} #TODO: Ask user if he wishes to install the game files if no installation is found
 	else { &printError($hErrorMessages{'dne_primary'}, __LINE__); }
+	return;
+}
+# Creates missing folders required to install the files for a primary image; then calls the &UpdateServerFiles()
+# function in order to download the necessary files
+sub InstallServerFiles(){
+	my $sCmdDir = &checkSteamCmd() or do{ &printError("Unable to update server files", __LINE__); return; };
+
+	my $sPrimaryImage = &getPrimaryImagePath();
+	unless(&dirExists($sPrimaryImage)){
+		&printError($hErrorMessages{'dne_primary'}, __LINE__);
+
+		&printStatus("Creating directory");
+		&exeSysCmd('mkdir -p '.$sPrimaryImage);
+
+		&printStatus("Installing server files");
+		&UpdateServerFiles();
+	}
+	else { &UpdateServerFiles(); }
 	return;
 }
