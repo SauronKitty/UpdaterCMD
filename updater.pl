@@ -41,6 +41,7 @@ my %hColors = (
 my %hErrorMessages = ( # Added to reduce the number of strings that must be initialized on run time
 		       # Will also make translations easier if needed in the future.
 	'invalid_num_arg'	=> 'Invalid number of arguments',
+	'usr_root'		=> 'You are not permitted to run this application as the root user',
 	'not_file'		=> 'Given path leads to a directory and not a file',
 	'not_path'		=> 'Given path leads to a file and not a directory',
 	'dne_archive'		=> 'Given archive does not exist',
@@ -215,6 +216,8 @@ my %hProfiles = (
 #####################
 
 sub Main(){
+	if($ENV{LOGNAME} eq 'root'){ &printError($hErrorMessages{'usr_root'}, __LINE__); Exit(); }
+
 	if(!exists $hProfiles{$hSettings{'profile'}}){
 		&printError($hErrorMessages{'dne_profile'}, __LINE__);
 	}
