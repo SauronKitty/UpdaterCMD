@@ -216,7 +216,8 @@ my %hProfiles = (
 #####################
 
 sub Main(){
-	if($ENV{LOGNAME} eq 'root'){ &printError($hErrorMessages{'usr_root'}, __LINE__); Exit(); }
+	# Check if running as root user. If we are; terminate
+	if($ENV{LOGNAME} eq 'root'){ &printError($hErrorMessages{'usr_root'}, __LINE__); &Exit(); }
 
 	if(!exists $hProfiles{$hSettings{'profile'}}){
 		&printError($hErrorMessages{'dne_profile'}, __LINE__);
