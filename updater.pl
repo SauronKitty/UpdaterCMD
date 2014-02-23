@@ -15,7 +15,7 @@ use Term::ANSIColor;
 #####################
 
 my %hSettings = (
-	'version'	  => '0.991',
+	'version'	  => '0.992',
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'dir_primary'	  => '/home/emania/hlds/',
@@ -23,7 +23,7 @@ my %hSettings = (
 	'dir_output'	  => getcwd(),
 	'exe_steamcmd'	  => 'steamcmd.sh',
 	'fork_verbose'	  => 0,
-	'tar_verbose'	  => 0,
+	'cmd_verbose'	  => 0,
 	'auto_patch'	  => 1,
 	'console_prefix'  => 'UpdaterCMD',
 	'error_prefix'	  => 'Error',
@@ -263,7 +263,8 @@ sub ProcessCommand(){
 sub exeSysCmd(){
 	if(@_ == 1){
 		my($sCmd) = @_;
-		system("$sCmd\n");
+		my $sCmdOutput = `$sCmd`; # Execute $sCmd and place output inside $sCmdOutput
+		if($hSettings{'cmd_verbose'}){ print($sCmdOutput); }
 	}
 	else { &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
@@ -398,12 +399,7 @@ sub listContents(){
 sub packFiles(){
 	if(@_ == 2){
 		my($sArchiveName, $sFiles) = @_;
-		my $sFlags;
-
-		if($hSettings{'tar_verbose'}) { $sFlags = '-zcvf'; }
-		else { $sFlags = 'zcf'; }
-
-		&exeSysCmd("tar $sFlags $sArchiveName.tar.gz $sFiles");
+		&exeSysCmd("tar -zcvf $sArchiveName.tar.gz $sFiles");
 	}
 	else{ &printError($hErrorMessages{'invalid_num_arg'}, __LINE__); }
 	return;
@@ -412,10 +408,6 @@ sub packFiles(){
 sub unpackFiles(){
 	if(@_ == 2){
 		my($sArchivePath, $sTargetDir) = @_;
-		my $sFlags;
-
-		if($hSettings{'tar_verbose'}) { $sFlags = '-zxvf'; }
-		else { $sFlags = 'zxf'; }
 
 		my $sCwd = getcwd();
 		if(&fileExists($sArchivePath)){
@@ -427,7 +419,7 @@ sub unpackFiles(){
 			&exeSysCmd("cp $sArchivePath $sTargetDir");
 			if(&fileExists("$sTargetDir/$sArchiveName")){
 				&changeDir($sTargetDir);
-				&exeSysCmd("tar $sFlags $sArchiveName");
+				&exeSysCmd("tar -zcvf $sArchiveName");
 				&exeSysCmd("rm $sArchiveName"); # Using a direct system call as the &removeFile() function
 								# will check whether the file exists once again.
 				&changeDir($sCwd);
