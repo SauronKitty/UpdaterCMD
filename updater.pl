@@ -15,7 +15,7 @@ use Term::ANSIColor;
 #####################
 
 my %hSettings = (
-	'version'	  => '0.993',
+	'version'	  => '0.994',
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'dir_primary'	  => '/home/emania/hlds/',
@@ -429,7 +429,7 @@ sub unpackFiles(){
 			&exeSysCmd("cp $sArchivePath $sTargetDir");
 			if(&fileExists("$sTargetDir/$sArchiveName")){
 				&changeDir($sTargetDir);
-				&exeSysCmd("tar -zcvf $sArchiveName");
+				&exeSysCmd("tar -zxvf $sArchiveName");
 				&exeSysCmd("rm $sArchiveName"); # Using a direct system call as the &removeFile() function
 								# will check whether the file exists once again.
 				&changeDir($sCwd);
