@@ -38,6 +38,10 @@ my %hColors = (
 	'help_title'	  => 'underline'
 );
 
+my %hDownloadUrls  = (
+	'url_steamcmd'	  => 'http://media.steampowered.com/installer/steamcmd_linux.tar.gz'
+);
+
 my %hErrorMessages = ( # Added to reduce the number of strings that must be initialized on run time
 		       # Will also make translations easier if needed in the future.
 	'invalid_num_arg'		=> 'Invalid number of arguments',
@@ -731,6 +735,14 @@ sub checkSteamCmd(){
 	}
 	else { &printError($hErrorMessages{'dne_steamcmd'}, __LINE__); }
 	return 0;
+}
+#
+sub InstallSteamCmd(){ # Incomplete
+	my $sCmdDir = $hSettings{'dir_steamcmd'};
+	&exeSysCmd('mkdir -p '.$sCmdDir);
+	&exeSysCmd('wget '.$hDownloads{'url_steamcmd'}.' -O steamcmd.tar.gz');
+	&unpackFiles('steamcmd.tar.gz', $hSettings{'dir_steamcmd'};
+	return;
 }
 
 ##
