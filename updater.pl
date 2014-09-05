@@ -279,90 +279,6 @@ sub ProcessCommand(){
 #####################
 
 ##
-# Bash related functions
-##
-
-# Executes a shell command
-sub exeSysCmd(){
-	if(@_ == 1){
-		my($sCmd) = @_;
-		my $sCmdOutput = `$sCmd`; # Execute $sCmd and place output inside $sCmdOutput
-		if($hSettings{'cmd_verbose'}){ print($sCmdOutput); }
-	}
-	else { &printError($hErrorMessages{'invalid_num_arg'}, __FILE__.':'.__LINE__); }
-	return;
-}
-# Checks if a given file exists
-sub fileExists(){
-	if(@_ == 1){
-		my($sFile) = @_;
-
-		if(-e $sFile){
-			if(-f $sFile){
-				return 1;
-			}
-			else { &printError($hErrorMessages{'not_file'}, __FILE__.':'.__LINE__); }
-		}
-		else { &printError($hErrorMessages{'dne_file'}, __FILE__.':'.__LINE__); }
-	}
-	else { &printError($hErrorMessages{'invalid_num_arg'}, __FILE__.':'.__LINE__); }
-	return 0;
-}
-# Checks if a given folder exists
-sub dirExists(){
-	if(@_ == 1){
-		my($sDir) = @_;
-		if(-e $sDir){
-			if(-d $sDir){
-				return 1;
-			}
-			else { &printError($hErrorMessages{'not_path'}, __FILE__.':'.__LINE__); }
-		}
-		else { &printError($hErrorMessages{'dne_path'}, __FILE__.':'.__LINE__); }
-	}
-	else { &printError($hErrorMessages{'invalid_num_arg'}, __FILE__.':'.__LINE__); }
-	return 0;
-}
-# Changes pwd to the given dir
-sub changeDir(){
-	if(@_ == 1){ # Needs update
-		my($sDir) = @_;
-		if(&dirExists($sDir)){
-			chdir($sDir) || &printError($hErrorMessages{'error_chdir'}, __FILE__.':'.__LINE__);
-			return 1;
-		}
-		else { &printError($hErrorMessages{'error_chdir'}, __FILE__.':'.__LINE__); }
-	}
-	else { &printError($hErrorMessages{'invalid_num_arg'}, __FILE__.':'.__LINE__); }
-	&Exit();
-	return 0;
-}
-# Removes a given directory
-sub rmDir(){
-	if(@_ == 1){
-		my($sDir) = @_;
-		if(&dirExists($sDir)){
-			&exeSysCmd("rm -rf $sDir");
-		}
-		else { &printError($hErrorMessages{'error_rmdir'}, __FILE__.':'.__LINE__); }
-	}
-	else { &printError($hErrorMessages{'invalid_num_arg'}, __FILE__.':'.__LINE__); }
-	return;
-}
-# Removes a given file
-sub rmFile(){
-	if(@_ == 1){
-		my($sFile) = @_;
-		if(&fileExists($sFile)){
-			&exeSysCmd("rm $sFile");
-		}
-		else { &printError($hErrorMessages{'error_rmfile'}, __FILE__.':'.__LINE__); }
-	}
-	else { &printError($hErrorMessages{'invalid_num_arg'}, __FILE__.':'.__LINE__); }
-	return;
-}
-
-##
 # Image related functions
 ##
 
@@ -374,10 +290,10 @@ sub forkImage(){
 		my $sDestination  = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
 				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
 				    $sImageSuffix;
-		unless(-e $sDestination){ # &dirExists() prints an error, which we do not want in this case
-			if(&dirExists($sPrimaryImage)){
-				if($hSettings{'fork_verbose'}){ &exeSysCmd("cp -Rlv $sPrimaryImage $sDestination"); }
-				else { &exeSysCmd("cp -Rl $sPrimaryImage $sDestination"); }
+		unless(-e $sDestination){ # &Em::Console::dirExists() prints an error, which we do not want in this case
+			if(&Em::Console::dirExists($sPrimaryImage)){
+				if($hSettings{'fork_verbose'}){ &Em::Console::exeSysCmd("cp -Rlv $sPrimaryImage $sDestination"); }
+				else { &Em::Console::exeSysCmd("cp -Rl $sPrimaryImage $sDestination"); }
 			}
 			else { &printError($hErrorMessages{'generic_forkimage_000'}, __FILE__.':'.__LINE__); }
 		}
@@ -412,7 +328,7 @@ sub listContents(){
 	if(@_ == 1){
 		my($sArchiveName) = $_[0];
 
-		if(&fileExists($sArchiveName)){ &exeSysCmd("tar -ztvf $sArchiveName"); }
+		if(&Em::Console::fileExists($sArchiveName)){ &Em::Console::exeSysCmd("tar -ztvf $sArchiveName"); }
 		else { &printError($hErrorMessages{'dne_archive'}, __FILE__.':'.__LINE__); }
 	}
 	else { &printError($hErrorMessages{'invalid_archive_name'}, __FILE__.':'.__LINE__); }
@@ -422,7 +338,7 @@ sub listContents(){
 sub packFiles(){
 	if(@_ == 2){
 		my($sArchiveName, $sFiles) = @_;
-		&exeSysCmd("tar -zcvf $sArchiveName.tar.gz $sFiles");
+		&Em::Console::exeSysCmd("tar -zcvf $sArchiveName.tar.gz $sFiles");
 	}
 	else{ &printError($hErrorMessages{'invalid_num_arg'}, __FILE__.':'.__LINE__); }
 	return;
@@ -433,19 +349,19 @@ sub unpackFiles(){
 		my($sArchivePath, $sTargetDir) = @_;
 
 		my $sCwd = getcwd();
-		if(&fileExists($sArchivePath)){
+		if(&Em::Console::fileExists($sArchivePath)){
 			### VOLATILE ### NEEDS MORE TESTING ###
 			my $sArchiveName = $sArchivePath;
 			if($sArchivePath =~ m/^.+\/(.+\.tar\.gz)$/){ $sArchiveName = $1; } # If a path has been passed instead of an archive name
 			###    END   ### 000                ###
 
-			&exeSysCmd("cp $sArchivePath $sTargetDir");
-			if(&fileExists("$sTargetDir/$sArchiveName")){
-				&changeDir($sTargetDir);
-				&exeSysCmd("tar -zxvf $sArchiveName");
-				&exeSysCmd("rm $sArchiveName"); # Using a direct system call as the &removeFile() function
+			&Em::Console::exeSysCmd("cp $sArchivePath $sTargetDir");
+			if(&Em::Console::fileExists("$sTargetDir/$sArchiveName")){
+				&Em::Console::changeDir($sTargetDir);
+				&Em::Console::exeSysCmd("tar -zxvf $sArchiveName");
+				&Em::Console::exeSysCmd("rm $sArchiveName"); # Using a direct system call as the &removeFile() function
 								# will check whether the file exists once again.
-				&changeDir($sCwd);
+				&Em::Console::changeDir($sCwd);
 			}
 			else{ &printError($hErrorMessages{'error_cp_archive'}, __FILE__.':'.__LINE__); return; }
 		}
@@ -470,10 +386,10 @@ sub getPrimaryImagePath(){
 sub getPatchDir(){
 	if(@_ == 1){
 		my($sArchiveName) = @_;
-		if(&fileExists($sArchiveName)){ return($sArchiveName); }
+		if(&Em::Console::fileExists($sArchiveName)){ return($sArchiveName); }
 		else {
 			$sArchiveName = $hSettings{'dir_output'}.'/'.$hSettings{'profile'}.'/patches/'.$sArchiveName;
-			if(&fileExists($sArchiveName)){ return($sArchiveName); }
+			if(&Em::Console::fileExists($sArchiveName)){ return($sArchiveName); }
 		}
 		&printError($hErrorMessages{'dne_patch'}, __FILE__.':'.__LINE__);
 	}
@@ -484,7 +400,7 @@ sub getPatchDir(){
 sub getFolderName(){
 	if(@_ == 1){
 		my($sDirPath) = @_;
-		if(&dirExists($sDirPath)) { $sDirPath =~ /^.+\/(.+)$/; return($1); }
+		if(&Em::Console::dirExists($sDirPath)) { $sDirPath =~ /^.+\/(.+)$/; return($1); }
 		else{ &printError($hErrorMessages{'generic_getfoldername_000'}, __FILE__.':'.__LINE__); }
 	}
 	else { &printError($hErrorMessages{'invalid_num_arg'}, __FILE__.':'.__LINE__); }
@@ -502,14 +418,6 @@ sub printStatus(){
 sub printError(){
 	&Em::Console::printError(@_);
 	return;
-}
-# Returns date in the YYYY.MM.DD format
-sub getDate(){
-	my($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
-	$year += 1900; # Year is returned as a value starting from 1900, therefore we must
-		       # add 1900 to calculate present date.
-	$mon += 1;     # Months start from 0, therefore we must add 1
-	return("$year.$mon.$mday");
 }
 
 #####################
@@ -544,18 +452,18 @@ sub GenConf(){
 	my @sDirs = &getInstallations();
 
 	foreach my $sDir (@sDirs){
-		&changeDir($sDir);
+		&Em::Console::changeDir($sDir);
 
 		my $sFolder = &getFolderName($sDir);
 		if($hProfiles{$hSettings{'profile'}}{'IgnorePrimary'}){
 			if(&isPrimary($sFolder)) { next; } # Skip primary installation image
 		}
 		my $sDirOutput = $hSettings{'dir_output'}.'/'.$hSettings{'profile'}."/$sFolder"; # /<output_directory>/<profile_name>/<image_name>
-		&exeSysCmd('mkdir -p '.$sDirOutput); # Create folder if it does not exist
+		&Em::Console::exeSysCmd('mkdir -p '.$sDirOutput); # Create folder if it does not exist
 
 		&packFiles($sDirOutput."/$sFolder", join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListConf'}}));
 	}
-	&changeDir($sCwd);
+	&Em::Console::changeDir($sCwd);
 	return;
 }
 # Generated a back up of each server's log files
@@ -566,18 +474,18 @@ sub GenLogArchive(){
 	my @sDirs = &getInstallations();
 
 	foreach my $sDir (@sDirs){
-		&changeDir($sDir);
+		&Em::Console::changeDir($sDir);
 
 		my $sFolder = &getFolderName($sDir);
 		if($hProfiles{$hSettings{'profile'}}{'IgnorePrimary'}){
 			if(&isPrimary($sFolder)) { next; } # Skip primary installation image
 		}
 		my $sDirOutput = $hSettings{'dir_output'}.'/'.$hSettings{'profile'}."/$sFolder/logs";
-		&exeSysCmd('mkdir -p '.$sDirOutput);
+		&Em::Console::exeSysCmd('mkdir -p '.$sDirOutput);
 
-		&packFiles($sDirOutput."/log-$sFolder-".&getDate(), $hProfiles{$hSettings{'profile'}}{'DirLogs'});
+		&packFiles($sDirOutput."/log-$sFolder-".&Em::Console::getDate(), $hProfiles{$hSettings{'profile'}}{'DirLogs'});
 	}
-	&changeDir($sCwd);
+	&Em::Console::changeDir($sCwd);
 	return;
 }
 # Generates a payload image from the primary installation
@@ -586,15 +494,15 @@ sub GenLogArchive(){
 sub GenPayload(){
 	my $sCwd = getcwd();
 
-	&changeDir($hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'});
+	&Em::Console::changeDir($hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.$hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.$hProfiles{$hSettings{'profile'}}{'PrimaryImage'});
 	if(scalar @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}){
 		my $sDirOutput = $hSettings{'dir_output'}.'/'.$hSettings{'profile'};
-		&exeSysCmd('mkdir -p '.$sDirOutput);
+		&Em::Console::exeSysCmd('mkdir -p '.$sDirOutput);
 
-		&packFiles($sDirOutput."/em_payload-".$hSettings{'profile'}.'-'.&getDate(), join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}));
+		&packFiles($sDirOutput."/em_payload-".$hSettings{'profile'}.'-'.&Em::Console::getDate(), join(' ', @{$hProfiles{$hSettings{'profile'}}{'DirListPayload'}}));
 	}
 	else { &printError($hErrorMessages{'error_dirlist_empty'}, __FILE__.':'.__LINE__); }
-	&changeDir($sCwd);
+	&Em::Console::changeDir($sCwd);
 }
 # Applies a .tar.gz patch archive to all installation images
 sub PatchAll(){
@@ -626,7 +534,7 @@ sub PatchImage(){
 				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
 				    $sImageSuffix;
 		$sArchiveName = &getPatchDir($sArchiveName);
-		if(&dirExists($sDestination)){
+		if(&Em::Console::dirExists($sDestination)){
 			&unpackFiles($sArchiveName, $sDestination);
 		}
 		else { &printError($hErrorMessages{'dne_primary'}, __FILE__.':'.__LINE__); }
@@ -683,7 +591,7 @@ sub RespawnImage(){
 		my $sDestination  = $hProfiles{$hSettings{'profile'}}{'DirImage'}.'/'.
 				    $hProfiles{$hSettings{'profile'}}{'ImagePrefix'}.
 				    $sImageSuffix;
-		if(&dirExists($sDestination)){
+		if(&Em::Console::dirExists($sDestination)){
 			# Backup configuration image
 			&printStatus("Generating configuration image");
 			GenConf();
@@ -729,7 +637,7 @@ sub RespawnImage(){
 sub checkSteamCmd(){
 	my $sCmdDir = $hSettings{'dir_steamcmd'}.$hSettings{'exe_steamcmd'};
 
-	if(&fileExists($sCmdDir)){
+	if(&Em::Console::fileExists($sCmdDir)){
 		return $sCmdDir;
 	}
 	else { &printError($hErrorMessages{'dne_steamcmd'}, __FILE__.':'.__LINE__); }
@@ -738,8 +646,8 @@ sub checkSteamCmd(){
 #
 sub InstallSteamCmd(){ # Incomplete
 	my $sCmdDir = $hSettings{'dir_steamcmd'};
-	&exeSysCmd('mkdir -p '.$sCmdDir);
-	&exeSysCmd('wget '.$hDownloads{'url_steamcmd'}.' -O steamcmd.tar.gz');
+	&Em::Console::exeSysCmd('mkdir -p '.$sCmdDir);
+	&Em::Console::exeSysCmd('wget '.$hDownloads{'url_steamcmd'}.' -O steamcmd.tar.gz');
 	&unpackFiles('steamcmd.tar.gz', $hSettings{'dir_steamcmd'});
 	return;
 }
@@ -753,9 +661,9 @@ sub UpdateServerFiles(){
 	my $sCmdDir = &checkSteamCmd() or do{ &printError($hErrorMessages{'error_steamcmd_update'}, __FILE__.':'.__LINE__); return; };
 
 	my $sPrimaryImage = &getPrimaryImagePath();
-	if(&dirExists($sPrimaryImage)){
+	if(&Em::Console::dirExists($sPrimaryImage)){
 		my $sAppId = $hProfiles{$hSettings{'profile'}}{'AppId'};
-		&exeSysCmd("sh $sCmdDir +login anonymous +force_install_dir $sPrimaryImage +app_update $sAppId +quit");
+		&Em::Console::exeSysCmd("sh $sCmdDir +login anonymous +force_install_dir $sPrimaryImage +app_update $sAppId +quit");
 	} #TODO: Ask user if he wishes to install the game files if no installation is found
 	else { &printError($hErrorMessages{'dne_primary'}, __FILE__.':'.__LINE__); }
 	return;
@@ -766,11 +674,11 @@ sub InstallServerFiles(){
 	my $sCmdDir = &checkSteamCmd() or do{ &printError($hErrorMessages{'error_steamcmd_update'}, __FILE__.':'.__LINE__); return; };
 
 	my $sPrimaryImage = &getPrimaryImagePath();
-	unless(&dirExists($sPrimaryImage)){
+	unless(&Em::Console::dirExists($sPrimaryImage)){
 		&printError($hErrorMessages{'dne_primary'}, __FILE__.':'.__LINE__);
 
 		&printStatus("Creating directory");
-		&exeSysCmd('mkdir -p '.$sPrimaryImage);
+		&Em::Console::exeSysCmd('mkdir -p '.$sPrimaryImage);
 
 		&printStatus("Installing server files");
 		&UpdateServerFiles();
