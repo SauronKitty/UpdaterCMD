@@ -18,7 +18,7 @@ use Em::Console;
 #####################
 
 my %hSettings = (
-	'version'	  => '1.0',
+	'version'	  => '1.1',
 	'profile'	  => 'l4d2',
 	'sys_name'	  => 'eM-UpdaterCMD',
 	'dir_primary'	  => '/home/emania/hlds/',
@@ -31,7 +31,7 @@ my %hSettings = (
 	'console_prefix'  => 'UpdaterCMD',
 	'error_prefix'	  => 'Error',
 	'error_seperator' => ': ',
-	'exit_message'	  => 'Terminating...'
+	'exit_message'	  => 'Terminating.'
 );
 
 my %hColors = (
@@ -236,6 +236,12 @@ sub Main(){
 		&printError($hErrorMessages{'dne_profile'}, __FILE__.':'.__LINE__);
 	}
 	else{
+		# Configure Em::Console
+		&Em::Console::SetCvar('cmd_verbose', $hSettings{'cmd_verbose'});
+		&Em::Console::SetCvar('error_prefix', $hSettings{'error_prefix'});
+		&Em::Console::SetCvar('error_seperator', $hSettings{'error_seperator'});
+		&Em::Console::SetCvar('exit_message', $hSettings{'exit_message'});
+
 		print(colored(['bold'], "Loaded ".$hSettings{'sys_name'}.' '.$hSettings{'version'}."\n"));
 		&CommandInput();
 	}
