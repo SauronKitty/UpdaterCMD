@@ -36,28 +36,16 @@ my %hColors = (
 my %hErrorMessages = ( # Added to reduce the number of strings that must be initialized on run time
 		       # Will also make translations easier if needed in the future.
 	'invalid_num_arg'		=> 'Invalid number of arguments',
-	'invalid_archive_name'		=> 'Archive name invalid or not specified',
 	'usr_root'			=> 'You are not permitted to run this application as the root user',
 	'not_file'			=> 'Given path leads to a directory and not a file',
 	'not_path'			=> 'Given path leads to a file and not a directory',
-	'dne_archive'			=> 'Given archive does not exist',
-	'dne_conf_archive'		=> 'Configuration image not found',
 	'dne_file'			=> 'Given file does not exist',
-	'dne_path'			=> 'Given path does not exist',
-	'dne_patch'			=> 'Patch file does not exist',
 	'dne_primary'			=> 'Primary installation image does not exist',
-	'dne_profile'			=> 'Profile does not exist',
-	'dne_image'			=> 'Image does not exist',
-	'dne_cmd'			=> 'Command does not exist',
 	'dne_cvar'			=> 'Cvar does not exist',
 	'error_chdir'			=> 'Unable to change directory',
 	'error_rmfile'			=> 'Unable to remove file',
 	'error_rmdir'			=> 'Unable to remove directpry',
-	'error_cp_archive'		=> 'An error occured while copying the archive',
-	'abort_steam_update'		=> 'Server file update has been aborted',
 	'generic_echo_000'		=> 'Nothing to echo',
-	'generic_getfoldername_000'	=> 'Unable to return folder name',
-	'generic_forkimage_000'		=> 'Unable to create an installation image'
 );
 
 #####################
