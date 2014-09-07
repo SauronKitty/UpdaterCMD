@@ -31,7 +31,7 @@ my %hSettings = (
 	'console_prefix'  => 'UpdaterCMD',
 	'error_prefix'	  => 'Error',
 	'error_seperator' => ': ',
-	'exit_message'	  => 'Terminating.'
+	'exit_message'	  => 'Exiting.'
 );
 
 my %hColors = (
@@ -45,8 +45,7 @@ my %hDownloads = (
 	'url_steamcmd'	  => 'http://media.steampowered.com/installer/steamcmd_linux.tar.gz'
 );
 
-my %hErrorMessages = ( # Added to reduce the number of strings that must be initialized on run time
-		       # Will also make translations easier if needed in the future.
+my %hErrorMessages = (
 	'invalid_num_arg'		=> 'Invalid number of arguments',
 	'invalid_archive_name'		=> 'Archive name invalid or not specified',
 	'usr_root'			=> 'You are not permitted to run this application as the root user',
