@@ -29,7 +29,7 @@ unpackFiles()		void unpackFiles(string $_[0], string $_[1])	| $_[0] = Path to ar
 getPrimaryImagePath()	$string getPrimaryImagePath()			| Returns path to primary installation image for selected profile
 getPatchDir()		$string getPatchDir()				| $_[0] = Archive name (Checks cwd for patch file, if not found checks patch folder for the given file and returns the path prefixed to the given archive name)
 getFolderName()		$string getFolderName(string $_[0])		| $_[0] = Path to folder (Returns the folder at end of path)
-getInstallations()	@string getInstallations()			| (Returns list of installations based on $hProfiles{'xx'}{'ImagePrefix'}
+getInstallations()	\@string getInstallations()			| (Returns list of installations based on $hProfiles{'xx'}{'ImagePrefix'}
 printError()		void printError(string $_[0], int $_[1])	| $_[0] = Error message $_[1] = __LINE__ number function was called at
 printStatus()
 getDate()		$string getDate()				| (Returns date in pre-set format)
